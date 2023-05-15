@@ -1,0 +1,3 @@
+mixin CSVConvertable {
+  List toCSV();
+}
