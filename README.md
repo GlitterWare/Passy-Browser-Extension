@@ -3,6 +3,8 @@
 A powerful browser extension companion for the cross-platform offline password manager Passy.  
 https://glitterware.github.io/Passy
 
+*Notice: the connector is installed automatically starting from Passy v1.5.0 (Browser Extension update).*
+
 ## Contents
 
 1. [Features](#features)
