@@ -13,9 +13,9 @@ https://glitterware.github.io/Passy
 
 ## Features
 
+- ⚡ Autofill – Quickly fill fields in apps and websites without having to open the app.
 - 🔒 Security – All your information is encrypted in AES and stored offline on your devices, providing highest-tier security.
 - 📚 Multipurpose – Store passwords, payment cards, notes, id cards and identities, all in one place.
-- ⚡ Autofill – Quickly fill fields in apps and websites without having to open the app.
 - ✨ More features, including synchronization and automatic backups in the main app!
 
 ## Downloads
