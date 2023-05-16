@@ -53,7 +53,7 @@ class _SettingsScreen extends State<SettingsScreen> {
                           PassyTheme.lightContentColor, BlendMode.srcIn),
                     ),
                   ),
-                  center: const Text('Request a feature'),
+                  center: Text(localizations.requestAFeature),
                   right: const Icon(Icons.arrow_forward_ios_rounded),
                   onPressed: () => launchUrlString(
                     'https://github.com/GlitterWare/Passy/issues',
