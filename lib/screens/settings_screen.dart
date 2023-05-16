@@ -60,6 +60,16 @@ class _SettingsScreen extends State<SettingsScreen> {
                   ),
                 )),
                 PassyPadding(ThreeWidgetButton(
+                  center: Text(localizations.privacyPolicy),
+                  left: const Padding(
+                    padding: EdgeInsets.only(right: 30),
+                    child: Icon(Icons.person_rounded),
+                  ),
+                  right: const Icon(Icons.arrow_forward_ios_rounded),
+                  onPressed: () => launchUrlString(
+                      'https://github.com/GlitterWare/Passy/blob/main/PRIVACY-POLICY.md'),
+                )),
+                PassyPadding(ThreeWidgetButton(
                   center: Text(localizations.about),
                   left: const Padding(
                     padding: EdgeInsets.only(right: 30),
