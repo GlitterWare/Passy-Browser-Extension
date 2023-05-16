@@ -5,7 +5,6 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:favicon/favicon.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:websafe_svg/websafe_svg.dart';
@@ -82,8 +81,8 @@ class FavIconImage extends StatelessWidget {
         Favicon? icon;
         try {
           Future<Favicon?>? faviconFuture = _faviconFutures[url];
-          faviconFuture ??= compute(
-              (url) => FaviconFinder.getBest(url,
+          faviconFuture ??= compute<String, Favicon?>(
+              (url) async => await FaviconFinder.getBest(url,
                   suffixes: ['png', 'jpg', 'jpeg', 'ico']),
               url);
           icon = await faviconFuture;
