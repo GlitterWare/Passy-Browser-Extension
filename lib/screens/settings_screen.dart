@@ -63,7 +63,7 @@ class _SettingsScreen extends State<SettingsScreen> {
                   center: Text(localizations.privacyPolicy),
                   left: const Padding(
                     padding: EdgeInsets.only(right: 30),
-                    child: Icon(Icons.person_rounded),
+                    child: Icon(Icons.shield_moon_outlined),
                   ),
                   right: const Icon(Icons.arrow_forward_ios_rounded),
                   onPressed: () => launchUrlString(
