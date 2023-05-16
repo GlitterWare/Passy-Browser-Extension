@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:favicon/favicon.dart';
@@ -81,8 +82,10 @@ class FavIconImage extends StatelessWidget {
         Favicon? icon;
         try {
           Future<Favicon?>? faviconFuture = _faviconFutures[url];
-          faviconFuture ??= FaviconFinder.getBest(url,
-              suffixes: ['png', 'jpg', 'jpeg', 'ico']);
+          faviconFuture ??= compute(
+              (url) => FaviconFinder.getBest(url,
+                  suffixes: ['png', 'jpg', 'jpeg', 'ico']),
+              url);
           icon = await faviconFuture;
           _faviconFutures.remove(url);
         } catch (_) {
