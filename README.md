@@ -9,7 +9,8 @@ https://glitterware.github.io/Passy
 
 1. [Features](#features)
 2. [Downloads](#downloads)
-3. [Privacy policy](#privacy-policy)
+3. [Building](#building)
+4. [Privacy policy](#privacy-policy)
 
 ## Features
 
@@ -22,6 +23,15 @@ https://glitterware.github.io/Passy
 
 Passy Browser Extension is currently being submitted to the extension stores.  
 The downloads will be availabe soon, please check back in a week.
+
+## Building
+
+Passy Browser Extension is open-source, feel free to make modifications to it and build it yourself. We're always very glad to see people exploring our projects. 👥
+
+1. [Install Flutter](https://docs.flutter.dev/get-started/install).
+2. Clone the repository or [get the source code from the latest Passy release](https://github.com/GlitterWare/Passy/releases/latest).
+3. Run `flutter build web --web-renderer html --csp` to build Passy Browser Extension.
+4. You can then find your build at `build/web` relative to the project root.
 
 ## Privacy policy
 
