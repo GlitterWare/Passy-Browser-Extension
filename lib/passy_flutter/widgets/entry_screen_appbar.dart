@@ -33,12 +33,16 @@ class EntryScreenAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
+    data.setCurrentEntry(CurrentEntry(key: entryKey, type: entryType));
     return AppBar(
       leading: IconButton(
         padding: buttonPadding,
         splashRadius: buttonSplashRadius,
         icon: const Icon(Icons.arrow_back_ios_new_rounded),
-        onPressed: () => Navigator.pop(context),
+        onPressed: () {
+          data.setCurrentEntry(null);
+          Navigator.pop(context);
+        },
       ),
       title: title,
       actions: [

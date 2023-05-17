@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:passy_browser_extension/common/common.dart';
 import 'package:passy_browser_extension/passy_data/entry_event.dart';
+import 'package:passy_browser_extension/passy_data/entry_meta.dart';
 import 'package:passy_browser_extension/passy_data/id_card.dart';
 import 'package:passy_browser_extension/passy_data/identity.dart';
 import 'package:passy_browser_extension/passy_data/note.dart';
@@ -363,6 +364,54 @@ class _MainScreen extends State<MainScreen>
       },
       popupMenuItemBuilder: passyEntryPopupMenuItemBuilder,
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    CurrentEntry? currentEntry = data.currentEntry;
+    if (currentEntry != null) {
+      Future(() async {
+        dynamic entries = (await data.getEntriesMetadata(currentEntry.type))
+                ?.values
+                .toList() ??
+            <EntryMeta>[];
+        switch (currentEntry.type) {
+          case EntryType.password:
+            entries = List<PasswordMeta>.from(entries);
+            break;
+          case EntryType.paymentCard:
+            entries = List<PaymentCardMeta>.from(entries);
+            break;
+          case EntryType.note:
+            entries = List<NoteMeta>.from(entries);
+            break;
+          case EntryType.idCard:
+            entries = List<IDCardMeta>.from(entries);
+            break;
+          case EntryType.identity:
+            entries = List<IdentityMeta>.from(entries);
+            break;
+        }
+        PassyEntry? entry =
+            await data.getEntry(currentEntry.type, key: currentEntry.key);
+        bool isFavorite = (await data
+                    .getFavoriteEntries(currentEntry.type))?[currentEntry.key]
+                ?.status ==
+            EntryStatus.alive;
+        if (entry == null) {
+          data.setCurrentEntry(null);
+          return;
+        }
+        if (!mounted) return;
+        Navigator.pushNamed(
+            context, entryTypeToEntriesScreenName(currentEntry.type),
+            arguments: entries);
+        Navigator.pushNamed(
+            context, entryTypeToEntryScreenName(currentEntry.type),
+            arguments: EntryScreenArgs(entry: entry, isFavorite: isFavorite));
+      });
+    }
   }
 
   @override

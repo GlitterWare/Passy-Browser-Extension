@@ -82,11 +82,11 @@ abstract class JsInterop {
     return credentialsDecoded;
   }
 
-  static Future<String?> getLastUsername() async {
+  static Future<String?> getLastUsername() {
     return promiseToFuture(interop.getLastUsername());
   }
 
-  static Future<String?> setLastUsername(String username) {
+  static Future<void> setLastUsername(String username) {
     return promiseToFuture(interop.setLastUsername(username));
   }
 
@@ -96,6 +96,19 @@ abstract class JsInterop {
 
   static Future<void> setCurrentUsername(String? username) {
     return promiseToFuture(interop.setCurrentUsername(username));
+  }
+
+  static Future<CurrentEntry?> getCurrentEntry() async {
+    dynamic result = await promiseToFuture(interop.getCurrentEntry());
+    try {
+      return CurrentEntry.fromJson(jsonDecode(result));
+    } catch (_) {}
+    return null;
+  }
+
+  static Future<void> setCurrentEntry(CurrentEntry? entry) {
+    return promiseToFuture(
+        interop.setCurrentEntry(jsonEncode(entry?.toJson())));
   }
 
   static Future<bool> login(String username, String password) async {

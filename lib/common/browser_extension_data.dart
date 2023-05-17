@@ -1,3 +1,4 @@
+import 'package:passy_browser_extension/common/common.dart';
 import 'package:passy_browser_extension/common/js_interop.dart';
 import 'package:passy_browser_extension/passy_data/entry_event.dart';
 import 'package:passy_browser_extension/passy_data/entry_type.dart';
@@ -20,6 +21,8 @@ class BrowserExtensionData {
   String get lastUsername => _lastUsername;
   String? _currentUsername;
   String? get currentUsername => _currentUsername;
+  CurrentEntry? _currentEntry;
+  CurrentEntry? get currentEntry => _currentEntry;
   bool get isLoggedIn => currentUsername != null;
 
   BrowserExtensionData._({
@@ -27,9 +30,11 @@ class BrowserExtensionData {
     required this.pageUrl,
     required String lastUsername,
     String? currentUsername,
+    CurrentEntry? currentEntry,
     Map<String, AccountCredentials>? credentials,
   })  : _lastUsername = lastUsername,
         _currentUsername = currentUsername,
+        _currentEntry = currentEntry,
         _credentials = credentials ?? {};
 
   static Future<BrowserExtensionData?> load() async {
@@ -38,6 +43,7 @@ class BrowserExtensionData {
     String? lastUsername = await JsInterop.getLastUsername();
     lastUsername ??= '';
     String? currentUsername = await JsInterop.getCurrentUsername();
+    CurrentEntry? currentEntry = await JsInterop.getCurrentEntry();
     if (currentUsername != null) {
       bool isLoggedIn = await JsInterop.isLoggedIn(currentUsername);
       if (!isLoggedIn) currentUsername = null;
@@ -47,6 +53,7 @@ class BrowserExtensionData {
       pageUrl: pageUrl,
       lastUsername: lastUsername,
       currentUsername: currentUsername,
+      currentEntry: currentEntry,
       credentials: {},
     );
     await data.reloadAccountCredentials();
@@ -66,6 +73,11 @@ class BrowserExtensionData {
 
   String? getPasswordHash(String username) =>
       _credentials[username]?.passwordHash;
+
+  Future<void> setCurrentEntry(CurrentEntry? entry) {
+    _currentEntry = entry;
+    return JsInterop.setCurrentEntry(entry);
+  }
 
   Future<bool> login(String username, String password) async {
     await JsInterop.logoutAll();

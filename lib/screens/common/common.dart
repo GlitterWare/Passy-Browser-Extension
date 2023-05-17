@@ -11,7 +11,17 @@ import '../../passy_data/note.dart';
 import '../../passy_data/password.dart';
 import '../../passy_data/payment_card.dart';
 import '../../passy_flutter/common/common.dart';
+import '../id_card_screen.dart';
+import '../id_cards_screen.dart';
+import '../identities_screen.dart';
+import '../identity_screen.dart';
 import '../login_screen.dart';
+import '../note_screen.dart';
+import '../notes_screen.dart';
+import '../password_screen.dart';
+import '../passwords_screen.dart';
+import '../payment_card_screen.dart';
+import '../payment_cards_screen.dart';
 
 void logOut(State state) {
   showDialog(
@@ -334,5 +344,35 @@ String genderToReadableName(Gender gender) {
       return localizations.female;
     case Gender.other:
       return localizations.other;
+  }
+}
+
+String entryTypeToEntriesScreenName(EntryType type) {
+  switch (type) {
+    case EntryType.password:
+      return PasswordsScreen.routeName;
+    case EntryType.paymentCard:
+      return PaymentCardsScreen.routeName;
+    case EntryType.note:
+      return NotesScreen.routeName;
+    case EntryType.idCard:
+      return IDCardsScreen.routeName;
+    case EntryType.identity:
+      return IdentitiesScreen.routeName;
+  }
+}
+
+String entryTypeToEntryScreenName(EntryType type) {
+  switch (type) {
+    case EntryType.password:
+      return PasswordScreen.routeName;
+    case EntryType.paymentCard:
+      return PaymentCardScreen.routeName;
+    case EntryType.note:
+      return NoteScreen.routeName;
+    case EntryType.idCard:
+      return IDCardScreen.routeName;
+    case EntryType.identity:
+      return IdentityScreen.routeName;
   }
 }

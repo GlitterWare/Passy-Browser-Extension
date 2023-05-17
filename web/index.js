@@ -60,3 +60,14 @@ async function getCurrentUsername() {
 function setCurrentUsername(username) {
   return browser.runtime.sendMessage({ args: ['current_username', 'set', username] });
 }
+
+async function getCurrentEntry() {
+  const response = await browser.storage.local.get('currentEntry');
+  if (response == null) return null;
+  if (response.currentEntry == null) return null;
+  return response.currentEntry;
+}
+
+function setCurrentEntry(currentEntry) {
+  return browser.storage.local.set({ 'currentEntry': currentEntry })
+}

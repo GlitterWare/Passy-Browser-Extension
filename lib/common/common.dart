@@ -3,6 +3,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:passy_browser_extension/common/browser_extension_data.dart';
+import 'package:passy_browser_extension/passy_data/entry_type.dart';
+import 'package:passy_browser_extension/passy_data/json_convertable.dart';
 
 const String extensionVersion = '1.0.0';
 
@@ -127,4 +129,28 @@ List csvDecode(String source,
   }
 
   return decode(source);
+}
+
+class CurrentEntry with JsonConvertable {
+  final String key;
+  final EntryType type;
+
+  CurrentEntry({
+    required this.key,
+    required this.type,
+  });
+
+  CurrentEntry.fromJson(Map<String, dynamic> json)
+      : key = json['key'] ?? '',
+        type = json.containsKey('type')
+            ? entryTypeFromName(json['type']) ?? EntryType.password
+            : EntryType.password;
+
+  @override
+  toJson() {
+    return {
+      'key': key,
+      'type': type.name,
+    };
+  }
 }

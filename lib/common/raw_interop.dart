@@ -34,3 +34,9 @@ external getCurrentUsername();
 
 @JS()
 external setCurrentUsername(username);
+
+@JS()
+external getCurrentEntry();
+
+@JS()
+external setCurrentEntry(username);
