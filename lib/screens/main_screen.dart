@@ -615,37 +615,42 @@ class _MainScreen extends State<MainScreen>
             onPressed: () => logOut(this),
           ),
           actions: [
-            /*
             IconButton(
               padding: PassyTheme.appBarButtonPadding,
               tooltip: localizations.search,
-              onPressed: () =>
+              onPressed: () async {
+                Map<String, IDCardMeta>? idCards =
+                    await data.getIDCardsMetadata();
+                if (idCards == null) return;
+                Map<String, IdentityMeta>? identities =
+                    await data.getIdentitiesMetadata();
+                if (identities == null) return;
+                Map<String, PasswordMeta>? passwords =
+                    await data.getPasswordsMetadata();
+                if (passwords == null) return;
+                Map<String, NoteMeta>? notes = await data.getNotesMetadata();
+                if (notes == null) return;
+                Map<String, PaymentCardMeta>? paymentCards =
+                    await data.getPaymentCardsMetadata();
+                if (paymentCards == null) return;
+                if (mounted) {
                   Navigator.pushNamed(context, SearchScreen.routeName,
                       arguments: SearchScreenArgs(
                         title: localizations.allEntries,
-                        builder: _searchBuilder,
-                      )),
+                        builder: (terms) => _searchBuilder(
+                          terms,
+                          idCardsMetadata: idCards,
+                          identitiesMetadata: identities,
+                          passwordsMetadata: passwords,
+                          notesMetadata: notes,
+                          paymentCardsMetadata: paymentCards,
+                        ),
+                      ));
+                }
+              },
               icon: const Icon(Icons.search_rounded),
               splashRadius: PassyTheme.appBarButtonSplashRadius,
             ),
-            IconButton(
-              splashRadius: PassyTheme.appBarButtonSplashRadius,
-              padding: PassyTheme.appBarButtonPadding,
-              tooltip: localizations.synchronize,
-              onPressed: () {
-                if (!_account.isRSAKeypairLoaded) {
-                  showSnackBar(
-                    context,
-                    message: localizations.settingUpSynchronization,
-                    icon: const Icon(CupertinoIcons.clock_solid,
-                        color: PassyTheme.darkContentColor),
-                  );
-                  return;
-                }
-                showSynchronizationDialog(context);
-              },
-              icon: const Icon(Icons.sync_rounded),
-            ),*/
             IconButton(
               padding: PassyTheme.appBarButtonPadding,
               tooltip: localizations.settings,
