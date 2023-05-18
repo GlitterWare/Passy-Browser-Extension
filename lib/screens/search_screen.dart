@@ -38,6 +38,7 @@ class _SearchScreen extends State<SearchScreen> {
             (data.isEmbed ? Uri.parse(data.pageUrl).host : '').length),
   ));
   FocusNode queryFocus = FocusNode()..requestFocus();
+  Future<void>? entryBuilder;
 
   @override
   void initState() {
@@ -97,7 +98,13 @@ class _SearchScreen extends State<SearchScreen> {
                     queryController.text = s;
                     queryController.selection = TextSelection(
                         baseOffset: baseOffset, extentOffset: baseOffset);
-                    _widget = builder(s);
+                    entryBuilder ??= Future<void>.delayed(
+                        const Duration(milliseconds: 100), () {
+                      entryBuilder = null;
+                      setState(() {
+                        _widget = builder(queryController.text);
+                      });
+                    });
                   });
                 })),
             Expanded(
