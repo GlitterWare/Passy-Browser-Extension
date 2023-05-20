@@ -9,6 +9,7 @@ class IDCardButtonListView extends StatefulWidget {
   final void Function(IDCardMeta idCard)? onPressed;
   final List<PopupMenuEntry<dynamic>> Function(
       State state, IDCardMeta idCardMeta)? popupMenuItemBuilder;
+  final List<Widget>? topWidgets;
 
   const IDCardButtonListView({
     Key? key,
@@ -16,6 +17,7 @@ class IDCardButtonListView extends StatefulWidget {
     this.shouldSort = false,
     this.onPressed,
     this.popupMenuItemBuilder,
+    this.topWidgets,
   }) : super(key: key);
 
   @override
@@ -28,6 +30,7 @@ class _IDCardButtonListViewState extends State<IDCardButtonListView> {
     if (widget.shouldSort) PassySort.sortIDCards(widget.idCards);
     return ListView(
       children: [
+        if (widget.topWidgets != null) ...widget.topWidgets!,
         for (IDCardMeta idCard in widget.idCards)
           PassyPadding(IDCardButton(
             idCard: idCard,

@@ -12,6 +12,7 @@ class PasswordButtonListView extends StatefulWidget {
   final void Function(PasswordMeta password)? onPressed;
   final List<PopupMenuEntry<dynamic>> Function(
       State state, PasswordMeta passwordMeta)? popupMenuItemBuilder;
+  final List<Widget>? topWidgets;
 
   const PasswordButtonListView({
     Key? key,
@@ -19,6 +20,7 @@ class PasswordButtonListView extends StatefulWidget {
     this.shouldSort = false,
     this.onPressed,
     this.popupMenuItemBuilder,
+    this.topWidgets,
   }) : super(key: key);
 
   @override
@@ -31,6 +33,7 @@ class _PasswordButtonListViewState extends State<PasswordButtonListView> {
     if (widget.shouldSort) PassySort.sortPasswords(widget.passwords);
     return ListView(
       children: [
+        if (widget.topWidgets != null) ...widget.topWidgets!,
         if (data.isEmbed)
           PassyPadding(ThreeWidgetButton(
             left: const Icon(Icons.add_rounded),

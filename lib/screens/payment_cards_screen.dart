@@ -137,6 +137,20 @@ class _PaymentCardsScreen extends State<PaymentCardsScreen> {
               ],
             )
           : PaymentCardButtonListView(
+              topWidgets: [
+                PassyPadding(
+                  ThreeWidgetButton(
+                    left: const Icon(Icons.add_rounded),
+                    center: Text(
+                      localizations.addPaymentCard,
+                      textAlign: TextAlign.center,
+                    ),
+                    right: const Icon(Icons.arrow_forward_ios_rounded),
+                    onPressed: () => Navigator.pushNamed(
+                        context, EditPaymentCardScreen.routeName),
+                  ),
+                ),
+              ],
               paymentCards: paymentCards,
               shouldSort: true,
               onPressed: (paymentCardMeta) async {

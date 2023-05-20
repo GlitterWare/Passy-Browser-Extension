@@ -115,6 +115,20 @@ class _PasswordsScreen extends State<PasswordsScreen> {
               ],
             )
           : PasswordButtonListView(
+              topWidgets: [
+                PassyPadding(
+                  ThreeWidgetButton(
+                    left: const Icon(Icons.add_rounded),
+                    center: Text(
+                      localizations.addPassword,
+                      textAlign: TextAlign.center,
+                    ),
+                    right: const Icon(Icons.arrow_forward_ios_rounded),
+                    onPressed: () => Navigator.pushNamed(
+                        context, EditPasswordScreen.routeName),
+                  ),
+                ),
+              ],
               passwords: passwords.toList(),
               onPressed: (passwordMeta) async {
                 Password? password = await data.getPassword(passwordMeta.key);
