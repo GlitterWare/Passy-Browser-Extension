@@ -24,6 +24,10 @@ https://glitterware.github.io/Passy
 Passy Browser Extension is currently being submitted to the extension stores.  
 The downloads will be availabe soon, please check back in a week.
 
+### Edge
+
+https://microsoftedge.microsoft.com/addons/detail/passy-password-manager-/khcfpejnhlonmipnjmlebjncibplamff
+
 ## Building
 
 Passy Browser Extension is open-source, feel free to make modifications to it and build it yourself. We're always very glad to see people exploring our projects. 👥
