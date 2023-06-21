@@ -6,7 +6,7 @@ import 'package:passy_browser_extension/common/browser_extension_data.dart';
 import 'package:passy_browser_extension/passy_data/entry_type.dart';
 import 'package:passy_browser_extension/passy_data/json_convertable.dart';
 
-const String extensionVersion = '1.0.0';
+const String extensionVersion = '1.0.1';
 
 late AppLocalizations localizations;
 late BrowserExtensionData data;
