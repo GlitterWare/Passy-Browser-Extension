@@ -31,7 +31,7 @@ https://chrome.google.com/webstore/detail/passy-password-manager-br/lndgiajgfcgo
 
 ### Edge
 
-Edge extension is currently non-functional, but as Microsoft Edge is fully compatible with Chrome extensions you can safely use the link above for installation. If you still wish to see the Microsoft Add-ons extension page, click (here)[https://microsoftedge.microsoft.com/addons/detail/passy-password-manager-/khcfpejnhlonmipnjmlebjncibplamff].
+Edge extension is currently non-functional, but as Microsoft Edge is fully compatible with Chrome extensions you can safely use the link above for installation. If you still wish to see the Microsoft Add-ons extension page, click [here](https://microsoftedge.microsoft.com/addons/detail/passy-password-manager-/khcfpejnhlonmipnjmlebjncibplamff).
 
 ### Firefox
 
