@@ -21,9 +21,7 @@ https://glitterware.github.io/Passy
 
 ## Downloads
 
-*We apologize to those using a **non-English Windows system** at the moment. Due to an issue with locale-specific directory names, the connector is currently only functional for English installations (this issue is tracked at https://github.com/GlitterWare/Passy/issues/47). If you are familiar with symbolic links, you may attempt creating a link to your documents directory with file name 'Documents' in your user folder in order to make use of the connector.*
-
-***Windows installer users**: if you have already installed v1.5.0, please re-download the installer from https://github.com/GlitterWare/Passy/releases/latest and run it one more time. The installer script was now updated properly to include the components and functionality necessary for the connector to work. Thank you.*
+Passy Browser Extension is fully supported starting from Passy v1.5.2.
 
 ### Chrome
 
@@ -31,7 +29,7 @@ https://chrome.google.com/webstore/detail/passy-password-manager-br/lndgiajgfcgo
 
 ### Edge
 
-Edge extension is currently non-functional, but as Microsoft Edge is fully compatible with Chrome extensions you can safely use the link above for installation. If you still wish to see the Microsoft Add-ons extension page, click [here](https://microsoftedge.microsoft.com/addons/detail/passy-password-manager-/khcfpejnhlonmipnjmlebjncibplamff).
+https://microsoftedge.microsoft.com/addons/detail/passy-password-manager-/khcfpejnhlonmipnjmlebjncibplamff
 
 ### Firefox
 
