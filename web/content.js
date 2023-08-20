@@ -25,7 +25,7 @@ var lastElement = null;
 function loadEmbed() {
   const autofillPopup = document.getElementById('passy-autofill-popup');
   if (autofillPopup != null) return;
-  document.body.insertAdjacentHTML('beforeend', `<div id="passy-autofill-popup" style="visibility: visible; position: absolute !important; top: 401px !important; left: 557px !important; z-index: 100000"><iframe src="${indexUrl}"
+  document.body.insertAdjacentHTML('beforeend', `<div id="passy-autofill-popup" style="visibility: visible !important; position: absolute !important; top: 401px !important; left: 557px !important; z-index: 100000 !important"><iframe src="${indexUrl}"
       frameborder="0" 
       marginheight="0" 
       marginwidth="0" 
