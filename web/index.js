@@ -7,9 +7,9 @@ function isEmbed() {
 }
 
 function unloadEmbed() {
-  if (window.top == null) return;
+  if (window.parent == null) return;
   if (!isEmbed()) return;
-  return window.top.postMessage({ service: serviceName, args: [ 'unload_embed' ] }, '*');
+  return window.parent.postMessage({ service: serviceName, args: [ 'unload_embed' ] }, '*');
 }
 
 async function getPageUrl() { 
@@ -23,9 +23,9 @@ async function getPageUrl() {
 }
 
 function autofillPassword(username, email, password) {
-  if (window.top == null) return;
+  if (window.parent == null) return;
   if (!isEmbed()) return;
-  return window.top.postMessage({ service: serviceName, args: [ 'autofill', 'password', username, email, password ] }, '*');
+  return window.parent.postMessage({ service: serviceName, args: [ 'autofill', 'password', username, email, password ] }, '*');
 }
 
 async function isConnectorFound() {
@@ -71,3 +71,4 @@ async function getCurrentEntry() {
 function setCurrentEntry(currentEntry) {
   return browser.storage.local.set({ 'currentEntry': currentEntry })
 }
+

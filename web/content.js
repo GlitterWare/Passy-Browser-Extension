@@ -104,7 +104,7 @@ async function handleEmbedMessage(event) {
   }
 }
 
-window.onmessage = handleEmbedMessage;
+window.addEventListener("message", handleEmbedMessage);
 
 function onFoucsin(_) {
   const el = document.activeElement;
