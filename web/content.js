@@ -86,14 +86,17 @@ async function handleEmbedMessage(event) {
             const input = inputs[i];
             if (elementCheck(input, passwordQuery)) {
               input.value = password;
+              input.dispatchEvent(new Event('input', { bubbles: true }));
               continue;
             }
             if (elementCheck(input, emailQuery)) {
               input.value = email;
+              input.dispatchEvent(new Event('input', { bubbles: true }));
               continue;
             }
             if (elementCheck(input, usernameQuery)) {
               input.value = username;
+              input.dispatchEvent(new Event('input', { bubbles: true }));
               continue;
             }
           }
