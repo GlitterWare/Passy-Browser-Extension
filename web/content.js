@@ -25,14 +25,13 @@ var lastElement = null;
 function loadEmbed() {
   const autofillPopup = document.getElementById('passy-autofill-popup');
   if (autofillPopup != null) return;
-  document.body.insertAdjacentHTML('beforeend', `<div id="passy-autofill-popup" style="visibility: visible !important; position: absolute !important; top: 401px !important; left: 557px !important; z-index: 100000 !important"><iframe src="${indexUrl}"
+  document.body.insertAdjacentHTML('beforeend', `<div id="passy-autofill-popup" style="visibility: visible; position: absolute !important; top: 401px !important; left: 557px !important; z-index: 100000"><iframe src="${indexUrl}"
       frameborder="0" 
       marginheight="0" 
       marginwidth="0" 
       scrolling="auto"
       width="355"
-      height="350"></iframe><button id="passy-autofill-popup-close" style="position: absolute !important; top: 0px !important; left: 295px !important; width: 60px !important; height: 60px !important; cursor: pointer !important; background: transparent; border: none !important; z-index: 100000 !important"></div></div>`);
-  document.getElementById('passy-autofill-popup-close').addEventListener('click', unloadEmbed, false);
+      height="350"></iframe></div>`);
 }
 
 function unloadEmbed() {
