@@ -111,6 +111,13 @@ abstract class JsInterop {
         interop.setCurrentEntry(jsonEncode(entry?.toJson())));
   }
 
+  static Future<bool> verify(String username, String password) async {
+    dynamic response =
+        await runCommand(['accounts', 'verify', username, password]);
+    if (response == 'true') return true;
+    return false;
+  }
+
   static Future<bool> login(String username, String password) async {
     dynamic response =
         await runCommand(['accounts', 'login', username, password]);

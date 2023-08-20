@@ -6,7 +6,6 @@ import 'package:passy_browser_extension/passy_data/passy_search.dart';
 
 import '../common/assets.dart';
 import '../common/common.dart';
-import '../passy_data/common.dart';
 import '../passy_data/password.dart';
 import '../passy_flutter/common/common.dart';
 import '../passy_flutter/passy_flutter.dart';
@@ -79,7 +78,7 @@ class _LoginScreen extends State<LoginScreen> {
       _passwordController.text = '';
     });
     await data.reloadAccountCredentials();
-    if (getPassyHash(password).toString() != data.getPasswordHash(_username)) {
+    if (!(await data.verify(_username, password))) {
       if (mounted) {
         showSnackBar(
           context,

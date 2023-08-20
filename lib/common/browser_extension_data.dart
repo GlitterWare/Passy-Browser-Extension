@@ -79,6 +79,12 @@ class BrowserExtensionData {
     return JsInterop.setCurrentEntry(entry);
   }
 
+  Future<bool> verify(String username, String password) async {
+    await JsInterop.logoutAll();
+    bool result = await JsInterop.verify(username, password);
+    return result;
+  }
+
   Future<bool> login(String username, String password) async {
     await JsInterop.logoutAll();
     bool result = await JsInterop.login(username, password);

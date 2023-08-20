@@ -32,7 +32,6 @@ dependencies:
   otp: ^3.1.4
   crypto: ^3.0.3
   cached_network_image: ^3.2.3
-  encrypt: ^5.0.1
   favicon: ^1.1.1
   flutter_cache_manager: ^3.3.0
   google_fonts: ^4.0.4
