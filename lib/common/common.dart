@@ -17,118 +17,118 @@ AppLocalizations loadLocalizations(BuildContext context) {
 }
 
 String csvEncode(List object) {
-  String encode(dynamic record) {
+  String _encode(dynamic record) {
     if (record is String) {
       return record
           .replaceAll('\\', '\\\\')
           .replaceAll('\n', '\\n')
           .replaceAll(',', '\\,')
-          .replaceAll('[', '\\[');
+          .replaceAll('[', '\\[')
+          .replaceAll(']', '\\]');
     }
     if (record is List) {
-      String encoded = '[';
+      String _encoded = '[';
       if (record.isNotEmpty) {
         for (int i = 0; i < record.length - 1; i++) {
-          encoded += '${encode(record[i])},';
+          _encoded += _encode(record[i]) + ',';
         }
-        encoded += encode(record[record.length - 1]);
+        _encoded += _encode(record[record.length - 1]);
       }
-      encoded += ']';
-      return encoded;
+      _encoded += ']';
+      return _encoded;
     }
     return record.toString();
   }
 
-  String result = '';
+  String _result = '';
   if (object.isNotEmpty) {
     for (int i = 0; i < object.length - 1; i++) {
-      result += '${encode(object[i])},';
+      _result += _encode(object[i]) + ',';
     }
-    result += encode(object[object.length - 1]);
+    _result += _encode(object[object.length - 1]);
   }
-  return result;
+  return _result;
 }
 
 List csvDecode(String source,
     {bool recursive = false, bool decodeBools = false}) {
-  List decode(String source) {
+  List _decode(String source) {
     if (source == '') return [];
 
-    List<dynamic> entry = [''];
+    List<dynamic> _entry = [''];
     int v = 0;
-    int depth = 0;
-    Iterator<String> characters = source.characters.iterator;
-    bool escapeDetected = false;
+    int _depth = 0;
+    Iterator<String> _characters = source.characters.iterator;
+    bool _escapeDetected = false;
 
-    void convert() {
+    void _convert() {
       if (!decodeBools) return;
-      if (entry[v] == 'false') {
-        entry[v] = false;
+      if (_entry[v] == 'false') {
+        _entry[v] = false;
       }
 
-      if (entry[v] == 'true') {
-        entry[v] = true;
+      if (_entry[v] == 'true') {
+        _entry[v] = true;
       }
     }
 
-    while (characters.moveNext()) {
-      String currentCharacter = characters.current;
+    while (_characters.moveNext()) {
+      String _currentCharacter = _characters.current;
 
-      if (!escapeDetected) {
-        if (characters.current == ',') {
-          convert();
+      if (!_escapeDetected) {
+        if (_characters.current == ',') {
+          _convert();
           v++;
-          entry.add('');
+          _entry.add('');
           continue;
-        } else if (characters.current == '[') {
-          entry[v] += '[';
-          depth++;
-          while (characters.moveNext()) {
-            entry[v] += characters.current;
-            if (characters.current == ']') {
-              depth--;
-              if (depth == 0) break;
-            }
-            if (characters.current == '\\') {
-              escapeDetected = true;
-            }
-            if (escapeDetected) {
-              escapeDetected = false;
+        } else if (_characters.current == '[') {
+          _entry[v] += '[';
+          _depth++;
+          while (_characters.moveNext()) {
+            _entry[v] += _characters.current;
+            if (_characters.current == '\\') {
+              if (!_characters.moveNext()) break;
+              _entry[v] += _characters.current;
               continue;
             }
-            if (characters.current == '[') {
-              depth++;
+            if (_characters.current == '[') {
+              _depth++;
+            }
+            if (_characters.current == ']') {
+              _depth--;
+              if (_depth == 0) break;
             }
           }
           if (recursive) {
-            if (entry[v] == '[]') {
-              entry[v] = [];
+            if (_entry[v] == '[]') {
+              _entry[v] = [];
               continue;
             }
-            String entryString = entry[v];
-            entry[v] = decode(entryString.substring(1, entryString.length - 1));
+            String _entryString = _entry[v];
+            _entry[v] =
+                _decode(_entryString.substring(1, _entryString.length - 1));
           }
           continue;
-        } else if (characters.current == '\\') {
-          escapeDetected = true;
+        } else if (_characters.current == '\\') {
+          _escapeDetected = true;
           continue;
         }
       } else {
-        if (characters.current == 'n') {
-          currentCharacter = '\n';
+        if (_characters.current == 'n') {
+          _currentCharacter = '\n';
         }
       }
 
-      entry[v] += currentCharacter;
-      escapeDetected = false;
+      _entry[v] += _currentCharacter;
+      _escapeDetected = false;
     }
 
-    convert();
+    _convert();
 
-    return entry;
+    return _entry;
   }
 
-  return decode(source);
+  return _decode(source);
 }
 
 class CurrentEntry with JsonConvertable {
