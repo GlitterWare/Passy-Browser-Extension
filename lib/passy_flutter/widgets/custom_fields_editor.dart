@@ -143,7 +143,7 @@ class _CustomFieldsEditor extends State<CustomFieldsEditor> {
                 tooltip: localizations.remove,
                 onPressed: () =>
                     setState(() => widget.customFields.removeAt(index)),
-                child: const Icon(Icons.remove_rounded),
+                child: const Icon(Symbols.remove_rounded, weight: 700),
               ),
             );
             return Padding(
