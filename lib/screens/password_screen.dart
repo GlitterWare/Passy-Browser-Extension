@@ -269,7 +269,8 @@ class _PasswordScreen extends State<PasswordScreen> {
                           launchUrlString(url);
                         } catch (_) {}
                       },
-                      child: const Icon(Icons.open_in_browser_rounded),
+                      child: const Icon(Symbols.open_in_browser_rounded,
+                          weight: 700),
                     ),
                   ),
                 )
