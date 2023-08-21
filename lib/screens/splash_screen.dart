@@ -1,6 +1,7 @@
 // ignore_for_file: avoid_web_libraries_in_flutter
 
 import 'package:flutter/material.dart';
+import 'package:material_symbols_icons/symbols.dart';
 import 'package:passy_browser_extension/common/assets.dart';
 import 'package:passy_browser_extension/common/browser_extension_data.dart';
 import 'package:passy_browser_extension/common/js_interop.dart';
@@ -40,8 +41,8 @@ class _SplashScreen extends State<SplashScreen> {
           showSnackBar(
             context,
             message: localizations.failedToLoad,
-            icon: const Icon(Icons.person_rounded,
-                color: PassyTheme.darkContentColor),
+            icon: const Icon(Symbols.person_rounded,
+                weight: 700, color: PassyTheme.darkContentColor),
           );
         }
         return;

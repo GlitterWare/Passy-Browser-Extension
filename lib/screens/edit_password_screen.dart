@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:material_symbols_icons/symbols.dart';
 import 'package:otp/otp.dart';
 import 'package:passy_browser_extension/screens/common/entry_screen_args.dart';
 
@@ -159,7 +160,7 @@ class _EditPasswordScreen extends State<EditPasswordScreen> {
           labelText: localizations.password,
           tooltip: localizations.generate,
           onChanged: (value) => setState(() => _password = value),
-          buttonIcon: const Icon(Icons.password_rounded),
+          buttonIcon: const Icon(Symbols.password_rounded, weight: 700),
           onPressed: () {
             showDialog(
               context: context,

@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:material_symbols_icons/symbols.dart';
 import 'package:passy_browser_extension/common/common.dart';
 import 'package:passy_browser_extension/passy_data/entry_event.dart';
 import 'package:passy_browser_extension/passy_data/entry_meta.dart';
@@ -224,7 +225,7 @@ class _MainScreen extends State<MainScreen>
                         children: [
                           TextSpan(text: '\n\n${localizations.noFavorites1}'),
                           const WidgetSpan(
-                              child: Icon(Icons.star_outline_rounded)),
+                              child: Icon(Symbols.star_rounded, weight: 700)),
                           TextSpan(text: ' ${localizations.noFavorites2}.'),
                         ]))),
                 const Spacer(flex: 7),
@@ -420,7 +421,7 @@ class _MainScreen extends State<MainScreen>
       PassyPadding(ThreeWidgetButton(
         left: const Padding(
           padding: EdgeInsets.only(right: 30),
-          child: Icon(Icons.star_rounded),
+          child: Icon(Symbols.star_rounded, weight: 700, fill: 1),
         ),
         right: const Icon(Icons.arrow_forward_ios_rounded),
         center: Text(localizations.favorites),
@@ -514,7 +515,7 @@ class _MainScreen extends State<MainScreen>
       PassyPadding(ThreeWidgetButton(
         left: const Padding(
           padding: EdgeInsets.only(right: 30),
-          child: Icon(Icons.password_rounded),
+          child: Icon(Symbols.password_rounded, weight: 700),
         ),
         right: const Icon(Icons.arrow_forward_ios_rounded),
         center: Text(localizations.passwords),
@@ -531,7 +532,7 @@ class _MainScreen extends State<MainScreen>
       PassyPadding(ThreeWidgetButton(
         left: const Padding(
           padding: EdgeInsets.only(right: 30),
-          child: Icon(Icons.payment_rounded),
+          child: Icon(Symbols.payment_rounded, weight: 700),
         ),
         right: const Icon(Icons.arrow_forward_ios_rounded),
         center: Text(localizations.paymentCards),
@@ -548,7 +549,7 @@ class _MainScreen extends State<MainScreen>
       PassyPadding(ThreeWidgetButton(
         left: const Padding(
           padding: EdgeInsets.only(right: 30),
-          child: Icon(Icons.note_rounded),
+          child: Icon(Symbols.note_rounded, weight: 700, fill: 1),
         ),
         right: const Icon(Icons.arrow_forward_ios_rounded),
         center: Text(localizations.notes),
@@ -564,7 +565,7 @@ class _MainScreen extends State<MainScreen>
       PassyPadding(ThreeWidgetButton(
         left: const Padding(
           padding: EdgeInsets.only(right: 30),
-          child: Icon(Icons.perm_identity_rounded),
+          child: Icon(Symbols.perm_identity_rounded, weight: 700),
         ),
         right: const Icon(Icons.arrow_forward_ios_rounded),
         center: Text(localizations.idCards),
@@ -581,7 +582,7 @@ class _MainScreen extends State<MainScreen>
       PassyPadding(ThreeWidgetButton(
         left: const Padding(
           padding: EdgeInsets.only(right: 30),
-          child: Icon(Icons.people_outline_rounded),
+          child: Icon(Symbols.people_outline_rounded, weight: 700),
         ),
         right: const Icon(Icons.arrow_forward_ios_rounded),
         center: Text(localizations.identities),
@@ -648,7 +649,7 @@ class _MainScreen extends State<MainScreen>
                       ));
                 }
               },
-              icon: const Icon(Icons.search_rounded),
+              icon: const Icon(Symbols.search_rounded, weight: 700),
               splashRadius: PassyTheme.appBarButtonSplashRadius,
             ),
             IconButton(

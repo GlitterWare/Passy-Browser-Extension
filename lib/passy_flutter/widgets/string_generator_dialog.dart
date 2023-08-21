@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:material_symbols_icons/symbols.dart';
 import 'package:passy_browser_extension/passy_flutter/passy_flutter.dart';
 
 import '../../common/common.dart';
@@ -76,7 +77,7 @@ class _StringGeneratorDialog extends State<StringGeneratorDialog> {
             center: Text(localizations.symbols),
             left: const Padding(
               padding: EdgeInsets.only(right: 30),
-              child: Icon(Icons.star),
+              child: Icon(Symbols.star, weight: 700),
             ),
             right: Switch(
               activeColor: Colors.greenAccent,

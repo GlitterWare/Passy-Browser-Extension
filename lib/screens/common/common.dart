@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:material_symbols_icons/symbols.dart';
 import 'package:passy_browser_extension/passy_flutter/passy_flutter.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
@@ -82,7 +83,7 @@ List<PopupMenuEntry> idCardPopupMenuBuilder(
   return [
     getIconedPopupMenuItem(
       content: const Text('ID number'),
-      icon: const Icon(Icons.numbers_outlined),
+      icon: const Icon(Symbols.numbers, weight: 700),
       onTap: () async {
         IDCard? idCard = await data.getIDCard(idCardMeta.key);
         if (idCard == null) return;
@@ -98,7 +99,7 @@ List<PopupMenuEntry> idCardPopupMenuBuilder(
     if (idCardMeta.name != '')
       getIconedPopupMenuItem(
         content: const Text('Name'),
-        icon: const Icon(Icons.person_outline_rounded),
+        icon: const Icon(Symbols.person_outline_rounded, weight: 700),
         onTap: () {
           Clipboard.setData(ClipboardData(text: idCardMeta.name));
           showSnackBar(state.context,
@@ -115,7 +116,7 @@ List<PopupMenuEntry> identityPopupMenuBuilder(
   return [
     getIconedPopupMenuItem(
       content: const Text('Name'),
-      icon: const Icon(Icons.person_outline_rounded),
+      icon: const Icon(Symbols.person_outline_rounded, weight: 700),
       onTap: () async {
         Identity? identity = await data.getIdentity(identityMeta.key);
         if (identity == null) return;
@@ -197,7 +198,7 @@ List<PopupMenuEntry> passwordPopupMenuBuilder(
     if (passwordMeta.username != '')
       getIconedPopupMenuItem(
         content: const Text('Username'),
-        icon: const Icon(Icons.person_outline_rounded),
+        icon: const Icon(Symbols.person_outline_rounded, weight: 700),
         onTap: () {
           Clipboard.setData(ClipboardData(text: passwordMeta.username));
           showSnackBar(state.context,
@@ -277,7 +278,10 @@ List<PopupMenuEntry> paymentCardPopupMenuBuilder(
     if (paymentCardMeta.cardholderName != '')
       getIconedPopupMenuItem(
         content: const Text('Card holder name'),
-        icon: const Icon(Icons.person_outline_rounded),
+        icon: const Icon(
+          Symbols.person_outline_rounded,
+          weight: 700,
+        ),
         onTap: () {
           Clipboard.setData(
               ClipboardData(text: paymentCardMeta.cardholderName));
@@ -301,7 +305,7 @@ List<PopupMenuEntry> paymentCardPopupMenuBuilder(
       ),
     getIconedPopupMenuItem(
       content: const Text('CVV'),
-      icon: const Icon(Icons.password_outlined),
+      icon: const Icon(Symbols.password_rounded, weight: 700),
       onTap: () async {
         PaymentCard? paymentCard =
             await data.getPaymentCard(paymentCardMeta.key);

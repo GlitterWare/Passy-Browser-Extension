@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 import '../../passy_data/note.dart';
 import '../passy_flutter.dart';
@@ -24,7 +25,7 @@ class NoteButton extends StatelessWidget {
           child: ThreeWidgetButton(
             left: const Padding(
               padding: EdgeInsets.only(right: 30),
-              child: Icon(Icons.note_rounded),
+              child: Icon(Symbols.note_rounded, weight: 700, fill: 1),
             ),
             right: const Icon(Icons.arrow_forward_ios_rounded),
             onPressed: onPressed,

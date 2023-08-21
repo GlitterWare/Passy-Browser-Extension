@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:material_symbols_icons/symbols.dart';
 import 'package:passy_browser_extension/common/js_interop.dart';
 import 'package:passy_browser_extension/passy_browser_extension_flutter/passy_browser_extensions_flutter.dart';
 import 'package:passy_browser_extension/passy_data/passy_search.dart';
@@ -40,8 +41,8 @@ class _LoginScreen extends State<LoginScreen> {
             showSnackBar(
               context,
               message: localizations.failedToLoad,
-              icon: const Icon(Icons.password_rounded,
-                  color: PassyTheme.darkContentColor),
+              icon: const Icon(Symbols.password_rounded,
+                  weight: 700, color: PassyTheme.darkContentColor),
             );
           }
           return;

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:material_symbols_icons/symbols.dart';
 import 'package:otp/otp.dart';
 import 'package:passy_browser_extension/screens/common/entry_screen_args.dart';
 
@@ -173,7 +174,8 @@ class _PasswordScreen extends State<PasswordScreen> {
               showSnackBar(context,
                   message: localizations.removedFromFavorites,
                   icon: const Icon(
-                    Icons.star_outline_rounded,
+                    Symbols.star_rounded,
+                    weight: 700,
                     color: PassyTheme.darkContentColor,
                   ));
             }
@@ -184,7 +186,9 @@ class _PasswordScreen extends State<PasswordScreen> {
               showSnackBar(context,
                   message: localizations.addedToFavorites,
                   icon: const Icon(
-                    Icons.star_rounded,
+                    Symbols.star_rounded,
+                    weight: 700,
+                    fill: 1,
                     color: PassyTheme.darkContentColor,
                   ));
             }

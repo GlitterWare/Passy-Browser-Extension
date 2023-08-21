@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 import '../../common/common.dart';
 import '../../passy_data/entry_type.dart';
@@ -60,8 +61,8 @@ class EntryScreenAppBar extends StatelessWidget implements PreferredSizeWidget {
               ? localizations.removeFromFavorites
               : localizations.addToFavorites,
           icon: isFavorite
-              ? const Icon(Icons.star_rounded)
-              : const Icon(Icons.star_outline_rounded),
+              ? const Icon(Symbols.star_rounded, weight: 700, fill: 1)
+              : const Icon(Symbols.star_rounded, weight: 700),
           onPressed: onFavoritePressed,
         ),
         IconButton(

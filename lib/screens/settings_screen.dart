@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:material_symbols_icons/material_symbols_icons.dart';
+import 'package:material_symbols_icons/symbols.dart';
 import 'package:passy_browser_extension/passy_flutter/passy_flutter.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:websafe_svg/websafe_svg.dart';
@@ -63,7 +65,7 @@ class _SettingsScreen extends State<SettingsScreen> {
                   center: Text(localizations.privacyPolicy),
                   left: const Padding(
                     padding: EdgeInsets.only(right: 30),
-                    child: Icon(Icons.shield_moon_outlined),
+                    child: Icon(Symbols.shield_moon_rounded, weight: 700),
                   ),
                   right: const Icon(Icons.arrow_forward_ios_rounded),
                   onPressed: () => launchUrlString(

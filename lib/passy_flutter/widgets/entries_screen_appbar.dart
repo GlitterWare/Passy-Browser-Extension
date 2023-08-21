@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 import '../../common/common.dart';
 import '../../passy_data/entry_type.dart';
@@ -42,7 +43,7 @@ class EntriesScreenAppBar extends StatelessWidget
           splashRadius: buttonSplashRadius,
           onPressed: onSearchPressed,
           tooltip: localizations.search,
-          icon: const Icon(Icons.search_rounded),
+          icon: const Icon(Symbols.search_rounded, weight: 700),
         ),
         IconButton(
           padding: buttonPadding,

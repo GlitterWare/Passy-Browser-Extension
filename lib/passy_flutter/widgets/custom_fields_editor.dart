@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 import '../../common/common.dart';
 import '../../passy_data/custom_field.dart';
@@ -100,7 +101,7 @@ class _CustomFieldsEditor extends State<CustomFieldsEditor> {
                       });
                     },
                     tooltip: localizations.generate,
-                    child: const Icon(Icons.password_rounded),
+                    child: const Icon(Symbols.password_rounded, weight: 700),
                   ),
                 );
                 break;
