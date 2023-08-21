@@ -38,6 +38,8 @@ dependencies:
   flutter_credit_card: ^3.0.6
   credit_card_type_detector: ^2.0.0
   material_symbols_icons: ^4.2668.0
+  flutter_markdown: ^0.6.17+1
+  markdown: ^7.1.1
 
 dev_dependencies:
   flutter_test:
