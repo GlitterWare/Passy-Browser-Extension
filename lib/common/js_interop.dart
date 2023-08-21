@@ -22,7 +22,7 @@ abstract class JsInterop {
     try {
       result = interop.isEmbed();
     } catch (e) {
-      result = false;
+      result = true;
     }
     return result;
   }

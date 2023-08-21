@@ -3,7 +3,11 @@ const myId = browser.runtime.id;
 const serviceName = 'io.github.glitterware.passy_browser_extension';
 
 function isEmbed() {
-  return window.top !== window.self;
+  try {
+    return window.top.origin !== window.origin;
+  } catch (_) {
+    return true;
+  }
 }
 
 function unloadEmbed() {
