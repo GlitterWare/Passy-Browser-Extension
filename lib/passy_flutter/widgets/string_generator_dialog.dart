@@ -64,7 +64,7 @@ class _StringGeneratorDialog extends State<StringGeneratorDialog> {
             center: Text(localizations.numbers),
             left: const Padding(
               padding: EdgeInsets.only(right: 30),
-              child: Icon(Icons.numbers),
+              child: Icon(Symbols.numbers, weight: 700),
             ),
             right: Switch(
               activeColor: Colors.greenAccent,
@@ -140,7 +140,7 @@ class _StringGeneratorDialog extends State<StringGeneratorDialog> {
                   heroTag: null,
                   tooltip: localizations.generate,
                   onPressed: () => setState(() => _generatePassword()),
-                  child: const Icon(Icons.refresh_rounded),
+                  child: const Icon(Symbols.refresh_rounded, weight: 700),
                 ),
               ),
               PassyPadding(
