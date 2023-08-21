@@ -1,13 +1,11 @@
 {
   "author": "GlitterWare",
-  "manifest_version": 3,
+  "manifest_version": 2,
   "name": "Passy - Password Manager Browser Extension",
   "short_name": "Passy",
   "description": "Multipurpose password manager browser extension with autofill",
   "version": "1.0.1",
-  "content_security_policy": {
-    "extension_pages": "script-src 'self' ; object-src 'self'"
-  },
+  "content_security_policy": "script-src 'self' ; object-src 'self'",
   "icons": {
     "16": "icons/Icon-16.png",
     "48": "icons/Icon-48.png",
@@ -15,22 +13,12 @@
     "192": "icons/Icon-192.png",
     "512": "icons/Icon-512.png"
   },
-  "action": {
-    "default_popup": "popup.html",
-    "default_title": "Passy"
-  },
   "web_accessible_resources": [
-    {
-      "resources": [
-        "browser-polyfill.min.js",
-        "index.html",
-        "index.js",
-        "main.dart.js"
-      ],
-      "matches": [
-        "<all_urls>"
-      ]
-    }
+    "browser-polyfill.min.js",
+    "index.html",
+    "index.js",
+    "main.dart.js",
+    "<all_urls>"
   ],
   "background": {
     "scripts": [
@@ -59,6 +47,17 @@
   "browser_specific_settings": {
     "gecko": {
       "id": "glitterware.passy_browser_extension@github.io"
+    }
+  },
+  "browser_action": {
+    "default_popup": "popup.html",
+    "default_title": "Passy",
+    "default_icon": {
+      "16": "icons/Icon-16.png",
+      "48": "icons/Icon-48.png",
+      "128": "icons/Icon-128.png",
+      "192": "icons/Icon-192.png",
+      "512": "icons/Icon-512.png"
     }
   }
 }
