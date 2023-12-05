@@ -7,5 +7,5 @@ cp -r build/web build/firefox
 rm build/firefox/manifest.json
 mv build/firefox/manifest_firefox.json build/firefox/manifest.json
 echo 'All done.'
-echo 'Chromium: $PWD/build/web'
-echo 'Firefox: $PWD/build/firefox'
+echo "Chromium: $PWD/build/web"
+echo "Firefox: $PWD/build/firefox"
