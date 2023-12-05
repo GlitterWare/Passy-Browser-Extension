@@ -1,7 +1,7 @@
 #! /bin/bash
 cd $(dirname 0)
 export PATH="$PATH:$PWD/submodules/flutter/bin"
-./submodules/flutter/bin/flutter build web --web-renderer html --csp
+./submodules/flutter/bin/flutter build web --web-renderer html --csp --pwa-strategy=none
 rm -rf build/firefox
 cp -r build/web build/firefox
 rm build/firefox/manifest.json
