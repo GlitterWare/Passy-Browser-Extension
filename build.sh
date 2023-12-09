@@ -1,5 +1,6 @@
 #! /bin/bash
 cd $(dirname 0)
+git submodule init
 git submodule update
 export PATH="$PATH:$PWD/submodules/flutter/bin"
 ./submodules/flutter/bin/flutter build web --web-renderer html --csp --pwa-strategy=none
