@@ -33,7 +33,7 @@ https://microsoftedge.microsoft.com/addons/detail/passy-password-manager-/khcfpe
 
 ### Firefox
 
-We are sorry to inform you that there are no downloads suitable for Firefox at this moment due to technical differences between Chromium and Gecko extensions API. We hope to resolve this by 2024.
+https://addons.mozilla.org/en-US/firefox/addon/passy/
 
 ## Building
 
