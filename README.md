@@ -15,6 +15,7 @@ https://glitterware.github.io/Passy
 ## Features
 
 - ⚡ Autofill – Quickly fill fields in apps and websites without having to open the app.
+- 📱 2FA codes - Keep your 2FA codes safe and sound in offline storage.
 - 🔒 Security – All your information is encrypted in AES and stored offline on your devices, providing highest-tier security.
 - 📚 Multipurpose – Store passwords, payment cards, notes, id cards and identities, all in one place.
 - ✨ More features, including synchronization and automatic backups in the main app!
