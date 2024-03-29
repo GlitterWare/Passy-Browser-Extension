@@ -31,20 +31,22 @@ void main() {
   runApp(const MyApp());
 }
 
+final ThemeData theme = ThemeData(
+  fontFamily: 'Roboto',
+  colorScheme: PassyTheme.theme.colorScheme,
+  snackBarTheme: PassyTheme.theme.snackBarTheme,
+  scaffoldBackgroundColor: PassyTheme.theme.scaffoldBackgroundColor,
+  inputDecorationTheme: PassyTheme.theme.inputDecorationTheme,
+  elevatedButtonTheme: PassyTheme.theme.elevatedButtonTheme,
+  textSelectionTheme: PassyTheme.theme.textSelectionTheme,
+);
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    ThemeData theme = PassyTheme.theme.copyWith(
-      textTheme:
-          GoogleFonts.robotoTextTheme(PassyTheme.theme.textTheme).copyWith(
-        bodyMedium: GoogleFonts.roboto(
-            textStyle: PassyTheme.theme.textTheme.bodyMedium),
-      ),
-    );
-
     return MaterialApp(
       routes: {
         EditCustomFieldScreen.routeName: (context) =>
