@@ -41,6 +41,8 @@ final ThemeData theme = ThemeData(
   textSelectionTheme: PassyTheme.theme.textSelectionTheme,
 );
 
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -75,6 +77,7 @@ class MyApp extends StatelessWidget {
         SplashScreen.routeName: (context) => const SplashScreen(),
       },
       theme: theme,
+      navigatorKey: navigatorKey,
       localizationsDelegates: const [
         AppLocalizations.delegate, // Add this line
         GlobalMaterialLocalizations.delegate,
