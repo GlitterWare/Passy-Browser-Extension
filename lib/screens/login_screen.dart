@@ -39,7 +39,6 @@ class _LoginScreen extends State<LoginScreen> {
         if (password == null) {
           if (mounted) {
             showSnackBar(
-              context,
               message: localizations.failedToLoad,
               icon: const Icon(Symbols.password_rounded,
                   weight: 700, color: PassyTheme.darkContentColor),
@@ -82,7 +81,6 @@ class _LoginScreen extends State<LoginScreen> {
     if (!(await data.verify(_username, password))) {
       if (mounted) {
         showSnackBar(
-          context,
           message: localizations.incorrectPassword,
           icon: const Icon(Icons.lock_rounded,
               color: PassyTheme.darkContentColor),

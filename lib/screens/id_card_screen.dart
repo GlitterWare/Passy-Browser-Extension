@@ -99,7 +99,7 @@ class _IDCardScreen extends State<IDCardScreen> {
             await data.toggleFavoriteIDCard(idCard.key, false);
             setState(() => isFavorite = false);
             if (mounted) {
-              showSnackBar(context,
+              showSnackBar(
                   message: localizations.removedFromFavorites,
                   icon: const Icon(
                     Symbols.star_rounded,
@@ -111,7 +111,7 @@ class _IDCardScreen extends State<IDCardScreen> {
             await data.toggleFavoriteIDCard(idCard.key, true);
             setState(() => isFavorite = true);
             if (mounted) {
-              showSnackBar(context,
+              showSnackBar(
                   message: localizations.addedToFavorites,
                   icon: const Icon(
                     Symbols.star_rounded,

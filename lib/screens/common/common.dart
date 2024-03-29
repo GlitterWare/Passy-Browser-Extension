@@ -89,7 +89,7 @@ List<PopupMenuEntry> idCardPopupMenuBuilder(
         if (idCard == null) return;
         Clipboard.setData(ClipboardData(text: idCard.idNumber));
         if (state.mounted) {
-          showSnackBar(state.context,
+          showSnackBar(
               message: 'ID number copied',
               icon: const Icon(Icons.copy_rounded,
                   color: PassyTheme.darkContentColor));
@@ -102,7 +102,7 @@ List<PopupMenuEntry> idCardPopupMenuBuilder(
         icon: const Icon(Symbols.person_outline_rounded, weight: 700),
         onTap: () {
           Clipboard.setData(ClipboardData(text: idCardMeta.name));
-          showSnackBar(state.context,
+          showSnackBar(
               message: 'Name copied',
               icon: const Icon(Icons.copy_rounded,
                   color: PassyTheme.darkContentColor));
@@ -133,7 +133,7 @@ List<PopupMenuEntry> identityPopupMenuBuilder(
         }
         Clipboard.setData(ClipboardData(text: name));
         if (state.mounted) {
-          showSnackBar(state.context,
+          showSnackBar(
               message: 'Name copied',
               icon: const Icon(Icons.copy_rounded,
                   color: PassyTheme.darkContentColor));
@@ -148,7 +148,7 @@ List<PopupMenuEntry> identityPopupMenuBuilder(
         if (identity == null) return;
         Clipboard.setData(ClipboardData(text: identity.email));
         if (state.mounted) {
-          showSnackBar(state.context,
+          showSnackBar(
               message: 'Email copied',
               icon: const Icon(Icons.copy_rounded,
                   color: PassyTheme.darkContentColor));
@@ -162,7 +162,7 @@ List<PopupMenuEntry> identityPopupMenuBuilder(
         onTap: () {
           Clipboard.setData(ClipboardData(text: identityMeta.firstAddressLine));
           if (state.mounted) {
-            showSnackBar(state.context,
+            showSnackBar(
                 message: 'Address line copied',
                 icon: const Icon(Icons.copy_rounded,
                     color: PassyTheme.darkContentColor));
@@ -182,7 +182,7 @@ List<PopupMenuEntry> notePopupMenuBuilder(State state, NoteMeta noteMeta) {
         if (note == null) return;
         Clipboard.setData(ClipboardData(text: note.note));
         if (state.mounted) {
-          showSnackBar(state.context,
+          showSnackBar(
               message: 'Note copied',
               icon: const Icon(Icons.copy_rounded,
                   color: PassyTheme.darkContentColor));
@@ -201,7 +201,7 @@ List<PopupMenuEntry> passwordPopupMenuBuilder(
         icon: const Icon(Symbols.person_outline_rounded, weight: 700),
         onTap: () {
           Clipboard.setData(ClipboardData(text: passwordMeta.username));
-          showSnackBar(state.context,
+          showSnackBar(
               message: 'Username copied',
               icon: const Icon(Icons.copy_rounded,
                   color: PassyTheme.darkContentColor));
@@ -215,7 +215,7 @@ List<PopupMenuEntry> passwordPopupMenuBuilder(
         if (password == null) return;
         Clipboard.setData(ClipboardData(text: password.email));
         if (state.mounted) {
-          showSnackBar(state.context,
+          showSnackBar(
               message: 'Email copied',
               icon: const Icon(Icons.copy_rounded,
                   color: PassyTheme.darkContentColor));
@@ -230,7 +230,7 @@ List<PopupMenuEntry> passwordPopupMenuBuilder(
         if (password == null) return;
         Clipboard.setData(ClipboardData(text: password.password));
         if (state.mounted) {
-          showSnackBar(state.context,
+          showSnackBar(
               message: 'Password copied',
               icon: const Icon(Icons.copy_rounded,
                   color: PassyTheme.darkContentColor));
@@ -268,7 +268,7 @@ List<PopupMenuEntry> paymentCardPopupMenuBuilder(
           if (paymentCard == null) return;
           Clipboard.setData(ClipboardData(text: paymentCard.cardNumber));
           if (state.mounted) {
-            showSnackBar(state.context,
+            showSnackBar(
                 message: 'Card number copied',
                 icon: const Icon(Icons.copy_rounded,
                     color: PassyTheme.darkContentColor));
@@ -285,7 +285,7 @@ List<PopupMenuEntry> paymentCardPopupMenuBuilder(
         onTap: () {
           Clipboard.setData(
               ClipboardData(text: paymentCardMeta.cardholderName));
-          showSnackBar(state.context,
+          showSnackBar(
               message: 'Card holder name copied',
               icon: const Icon(Icons.copy_rounded,
                   color: PassyTheme.darkContentColor));
@@ -297,7 +297,7 @@ List<PopupMenuEntry> paymentCardPopupMenuBuilder(
         icon: const Icon(Icons.date_range_outlined),
         onTap: () {
           Clipboard.setData(ClipboardData(text: paymentCardMeta.exp));
-          showSnackBar(state.context,
+          showSnackBar(
               message: 'Expiration date copied',
               icon: const Icon(Icons.copy_rounded,
                   color: PassyTheme.darkContentColor));
@@ -312,7 +312,7 @@ List<PopupMenuEntry> paymentCardPopupMenuBuilder(
         if (paymentCard == null) return;
         Clipboard.setData(ClipboardData(text: paymentCard.cvv));
         if (state.mounted) {
-          showSnackBar(state.context,
+          showSnackBar(
               message: 'CVV copied',
               icon: const Icon(Icons.copy_rounded,
                   color: PassyTheme.darkContentColor));

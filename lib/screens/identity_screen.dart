@@ -101,7 +101,7 @@ class _IdentityScreen extends State<IdentityScreen> {
             await data.toggleFavoriteIdentity(identity.key, false);
             setState(() => isFavorite = false);
             if (mounted) {
-              showSnackBar(context,
+              showSnackBar(
                   message: localizations.removedFromFavorites,
                   icon: const Icon(
                     Symbols.star_rounded,
@@ -113,7 +113,7 @@ class _IdentityScreen extends State<IdentityScreen> {
             await data.toggleFavoriteIdentity(identity.key, true);
             setState(() => isFavorite = true);
             if (mounted) {
-              showSnackBar(context,
+              showSnackBar(
                   message: localizations.addedToFavorites,
                   icon: const Icon(
                     Symbols.star_rounded,

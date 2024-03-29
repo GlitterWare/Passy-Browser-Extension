@@ -3,6 +3,7 @@ export 'always_disabled_focus_node.dart';
 import 'package:credit_card_type_detector/credit_card_type_detector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_credit_card/flutter_credit_card.dart';
+import 'package:passy_browser_extension/main.dart';
 
 import '../../common/assets.dart';
 import '../passy_flutter.dart';
@@ -94,12 +95,12 @@ Widget getCardTypeImage(CardType? cardType) {
   );
 }
 
-ScaffoldFeatureController<SnackBar, SnackBarClosedReason> showSnackBar(
-  BuildContext context, {
+ScaffoldFeatureController<SnackBar, SnackBarClosedReason> showSnackBar({
   required String message,
   required Widget icon,
   SnackBarAction? action,
 }) {
+  BuildContext context = navigatorKey.currentContext!;
   ScaffoldMessenger.of(context).clearSnackBars();
   return ScaffoldMessenger.of(context).showSnackBar(SnackBar(
     content: Row(children: [

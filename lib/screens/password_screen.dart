@@ -171,7 +171,7 @@ class _PasswordScreen extends State<PasswordScreen> {
             await data.toggleFavoritePassword(password!.key, false);
             setState(() => isFavorite = false);
             if (mounted) {
-              showSnackBar(context,
+              showSnackBar(
                   message: localizations.removedFromFavorites,
                   icon: const Icon(
                     Symbols.star_rounded,
@@ -183,7 +183,7 @@ class _PasswordScreen extends State<PasswordScreen> {
             await data.toggleFavoritePassword(password!.key, true);
             setState(() => isFavorite = true);
             if (mounted) {
-              showSnackBar(context,
+              showSnackBar(
                   message: localizations.addedToFavorites,
                   icon: const Icon(
                     Symbols.star_rounded,

@@ -100,7 +100,7 @@ class _NoteScreen extends State<NoteScreen> {
             await data.toggleFavoriteNote(note.key, false);
             setState(() => isFavorite = false);
             if (mounted) {
-              showSnackBar(context,
+              showSnackBar(
                   message: localizations.removedFromFavorites,
                   icon: const Icon(
                     Symbols.star_rounded,
@@ -112,7 +112,7 @@ class _NoteScreen extends State<NoteScreen> {
             await data.toggleFavoriteNote(note.key, true);
             setState(() => isFavorite = true);
             if (mounted) {
-              showSnackBar(context,
+              showSnackBar(
                   message: localizations.addedToFavorites,
                   icon: const Icon(
                     Symbols.star_rounded,

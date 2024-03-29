@@ -29,17 +29,18 @@ class _SplashScreen extends State<SplashScreen> {
   Widget build(BuildContext context) {
     Future<void> load() async {
       if (!(await JsInterop.getIsConnectorFound())) {
-        if (mounted) Navigator.pushNamed(context, NoConnectorScreen.routeName);
+        if (context.mounted) {
+          Navigator.pushNamed(context, NoConnectorScreen.routeName);
+        }
         while (!(await JsInterop.getIsConnectorFound())) {
           await Future.delayed(const Duration(milliseconds: 100));
         }
-        if (mounted) Navigator.pop(context);
+        if (context.mounted) Navigator.pop(context);
       }
       BrowserExtensionData? extensionData = await BrowserExtensionData.load();
       if (extensionData == null) {
         if (mounted) {
           showSnackBar(
-            context,
             message: localizations.failedToLoad,
             icon: const Icon(Symbols.person_rounded,
                 weight: 700, color: PassyTheme.darkContentColor),
