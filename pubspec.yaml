@@ -31,7 +31,7 @@ dependencies:
   url_launcher: ^6.1.10
   otp: ^3.1.4
   crypto: ^3.0.3
-  cached_network_image: ^3.2.3
+  cached_network_image: ^3.3.1
   favicon: ^1.1.1
   flutter_cache_manager: ^3.3.0
   google_fonts: ^4.0.4
@@ -40,6 +40,11 @@ dependencies:
   material_symbols_icons: ^4.2668.0
   flutter_markdown: ^0.6.17+1
   markdown: ^7.1.1
+  emoji_picker_flutter:
+    git:
+      url: https://github.com/GlitterWare/emoji_picker_flutter
+      ref: ba7e1116380e37bb3fac0d53277dd6937d8849d5
+  flutter_svg: ^2.0.5
 
 dev_dependencies:
   flutter_test:
