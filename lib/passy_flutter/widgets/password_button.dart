@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-
-import '../../common/assets.dart';
-import '../../passy_data/password.dart';
-import '../passy_flutter.dart';
+import '/passy_data/password.dart';
+import '/common/assets.dart';
+import '/passy_flutter/passy_flutter.dart';
 
 class PasswordButton extends StatelessWidget {
   final PasswordMeta password;
@@ -43,6 +42,7 @@ class PasswordButton extends StatelessWidget {
                 child: Text(
                   password.username,
                   style: const TextStyle(color: Colors.grey),
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
             ],
@@ -54,7 +54,7 @@ class PasswordButton extends StatelessWidget {
           child: PopupMenuButton(
             shape: PassyTheme.dialogShape,
             icon: const Icon(Icons.more_vert_rounded),
-            padding: const EdgeInsets.fromLTRB(12, 23, 12, 23),
+            padding: const EdgeInsets.fromLTRB(12, 22, 12, 22),
             splashRadius: 24,
             itemBuilder: popupMenuItemBuilder!,
           ),
