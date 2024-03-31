@@ -41,6 +41,8 @@ function collapse() {
   if (autofillPopup != null) autofillPopup.remove();
   collapsed = true;
   document.body.insertAdjacentHTML('beforeend', `<div id="passy-autofill-popup" style="visibility: visible !important; position: absolute !important; top: 401px !important; left: 557px !important; z-index: 100000 !important"><div
+      title="Passy"
+      data-toggle="tooltip"
       display="block"
       style="background-color: black !important ; width: 40px !important ; height: 40px !important ; cursor: pointer"
       frameborder="0" 
