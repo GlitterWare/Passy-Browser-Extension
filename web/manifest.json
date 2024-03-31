@@ -24,7 +24,7 @@
         {
             "resources": [
                 "browser-polyfill.min.js",
-                "chromium",
+                "canvaskit",
                 "index.html",
                 "index.js",
                 "main.dart.js"
