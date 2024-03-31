@@ -89,7 +89,7 @@ class _IdentityScreen extends State<IdentityScreen> {
                   List<IdentityMeta> identities =
                       (await data.getIdentitiesMetadata())?.values.toList() ??
                           <IdentityMeta>[];
-                  if (!mounted) return;
+                  if (!context.mounted) return;
                   Navigator.popUntil(
                       context, (r) => r.settings.name == MainScreen.routeName);
                   Navigator.pushNamed(context, IdentitiesScreen.routeName,

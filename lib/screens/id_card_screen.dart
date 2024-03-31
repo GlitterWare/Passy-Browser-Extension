@@ -88,7 +88,7 @@ class _IDCardScreen extends State<IDCardScreen> {
                     List<IDCardMeta> idCards =
                         (await data.getIDCardsMetadata())?.values.toList() ??
                             <IDCardMeta>[];
-                    if (!mounted) return;
+                    if (!context.mounted) return;
                     Navigator.popUntil(context,
                         (r) => r.settings.name == MainScreen.routeName);
                     Navigator.pushNamed(context, IDCardsScreen.routeName,

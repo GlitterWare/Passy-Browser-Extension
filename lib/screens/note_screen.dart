@@ -233,7 +233,7 @@ class _NoteScreen extends State<NoteScreen> {
                           arguments: notes);
                       Navigator.pushNamed(
                         context,
-                        NotesScreen.routeName,
+                        NoteScreen.routeName,
                         arguments: EntryScreenArgs(
                             entry: note, isFavorite: isFavorite),
                       );
