@@ -53,13 +53,17 @@ abstract class JsInterop {
     return isConnectorFound;
   }
 
-  static Future<dynamic> runCommand(List<String> args) {
-    return promiseToFuture(interop.sendCommand([
+  static Future<dynamic> _response = Future<dynamic>.value('');
+  static Future<dynamic> runCommand(List<String> args) async {
+    await _response;
+    Future<dynamic> response = promiseToFuture(interop.sendCommand([
       'passy_cli',
       'run',
       args,
       getPassyHash(jsonEncode(args)).toString(),
     ]));
+    _response = response;
+    return response;
   }
 
   static Future<Map<String, AccountCredentials>?>
