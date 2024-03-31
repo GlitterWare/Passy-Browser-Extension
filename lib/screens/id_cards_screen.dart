@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:passy_browser_extension/passy_data/entry_event.dart';
 import 'package:passy_browser_extension/screens/common/entry_screen_args.dart';
@@ -22,79 +23,122 @@ class IDCardsScreen extends StatefulWidget {
 }
 
 class _IDCardsScreen extends State<IDCardsScreen> {
+  List<String> _tags = [];
+  bool _isLoaded = false;
+  bool _isLoading = false;
+
   void _onAddPressed() =>
       Navigator.pushNamed(context, EditIDCardScreen.routeName);
 
-  void _onSearchPressed() {
-    List<IDCardMeta> idCardsMetadata =
-        ModalRoute.of(context)!.settings.arguments as List<IDCardMeta>;
+  void _onSearchPressed({String? tag}) {
     Navigator.pushNamed(context, SearchScreen.routeName,
-        arguments: SearchScreenArgs(builder: (String terms) {
-      final List<IDCardMeta> found = [];
-      final List<String> termsSplit = terms.trim().toLowerCase().split(' ');
-      for (IDCardMeta idCard in idCardsMetadata) {
-        {
-          bool testIDCard(IDCardMeta value) => idCard.key == value.key;
+        arguments: SearchScreenArgs(
+            entryType: EntryType.idCard,
+            selectedTags: tag == null ? [] : [tag],
+            builder:
+                (String terms, List<String> tags, void Function() rebuild) {
+              final List<IDCardMeta> found = [];
+              final List<String> termsList =
+                  terms.trim().toLowerCase().split(' ');
+              final List<IDCardMeta> idCards = ModalRoute.of(context)!
+                  .settings
+                  .arguments as List<IDCardMeta>;
+              for (IDCardMeta idCard in idCards) {
+                {
+                  bool testIDCard(IDCardMeta value) => idCard.key == value.key;
 
-          if (found.any(testIDCard)) continue;
-        }
-        {
-          int positiveCount = 0;
-          for (String term in termsSplit) {
-            if (idCard.nickname.toLowerCase().contains(term)) {
-              positiveCount++;
-              continue;
-            }
-            if (idCard.name.toLowerCase().contains(term)) {
-              positiveCount++;
-              continue;
-            }
-          }
-          if (positiveCount == termsSplit.length) {
-            found.add(idCard);
-          }
-        }
-      }
-      if (found.isEmpty) {
-        return CustomScrollView(
-          slivers: [
-            SliverFillRemaining(
-              child: Column(
-                children: [
-                  const Spacer(flex: 7),
-                  Text(
-                    localizations.noSearchResults,
-                    textAlign: TextAlign.center,
-                  ),
-                  const Spacer(flex: 7),
-                ],
-              ),
-            ),
-          ],
-        );
-      }
-      return IDCardButtonListView(
-        idCards: found,
-        shouldSort: true,
-        onPressed: (idCardMeta) async {
-          IDCard? idCard = await data.getIDCard(idCardMeta.key);
-          bool isFavorite =
-              (await data.getFavoriteIDCards())?[idCardMeta.key]?.status ==
-                  EntryStatus.alive;
-          if (idCard == null) return;
-          if (mounted) {
-            Navigator.pushNamed(context, IDCardScreen.routeName,
-                arguments:
-                    EntryScreenArgs(entry: idCard, isFavorite: isFavorite));
-          }
-        },
-        popupMenuItemBuilder: idCardPopupMenuBuilder,
-      );
-    }));
+                  if (found.any(testIDCard)) continue;
+                }
+                {
+                  bool tagMismatch = false;
+                  for (String tag in tags) {
+                    if (!idCard.tags.contains(tag)) {
+                      tagMismatch = true;
+                      break;
+                    }
+                  }
+                  if (tagMismatch) continue;
+                  int positiveCount = 0;
+                  for (String term in termsList) {
+                    if (idCard.nickname.toLowerCase().contains(term)) {
+                      positiveCount++;
+                      continue;
+                    }
+                    if (idCard.name.toLowerCase().contains(term)) {
+                      positiveCount++;
+                      continue;
+                    }
+                  }
+                  if (positiveCount == termsList.length) {
+                    found.add(idCard);
+                  }
+                }
+              }
+              if (found.isEmpty) {
+                return CustomScrollView(
+                  slivers: [
+                    SliverFillRemaining(
+                      hasScrollBody: false,
+                      child: Column(
+                        children: [
+                          const Spacer(flex: 7),
+                          Text(
+                            localizations.noSearchResults,
+                            textAlign: TextAlign.center,
+                          ),
+                          const Spacer(flex: 7),
+                        ],
+                      ),
+                    ),
+                  ],
+                );
+              }
+              return IDCardButtonListView(
+                idCards: found,
+                shouldSort: true,
+                onPressed: (idCardMeta) async {
+                  IDCard? idCard = await data.getIDCard(idCardMeta.key);
+                  if (idCard == null) return;
+                  bool isFavorite =
+                      (await data.getFavoriteIDCards())?[idCardMeta.key]
+                              ?.status ==
+                          EntryStatus.alive;
+                  if (!mounted) return;
+                  Navigator.pushNamed(
+                    context,
+                    IDCardScreen.routeName,
+                    arguments:
+                        EntryScreenArgs(entry: idCard, isFavorite: isFavorite),
+                  );
+                },
+                popupMenuItemBuilder: idCardPopupMenuBuilder,
+              );
+            }));
+  }
+
+  Future<void> _load() async {
+    _isLoaded = true;
+    _isLoading = true;
+    List<String> newTags;
+    try {
+      newTags = await data.idCardsTags;
+    } catch (_) {
+      return;
+    }
+    newTags.sort();
+    if (listEquals(newTags, _tags)) {
+      return;
+    }
+    if (mounted) {
+      setState(() {
+        _tags = newTags;
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    if (!_isLoaded) _load().whenComplete(() => _isLoading = false);
     List<IDCardMeta> idCards =
         ModalRoute.of(context)!.settings.arguments as List<IDCardMeta>;
     return Scaffold(
@@ -139,6 +183,20 @@ class _IDCardsScreen extends State<IDCardsScreen> {
                         context, EditIDCardScreen.routeName),
                   ),
                 ),
+                if (_tags.isNotEmpty)
+                  Center(
+                    child: Padding(
+                      padding: EdgeInsets.only(
+                          top: PassyTheme.passyPadding.top / 2,
+                          bottom: PassyTheme.passyPadding.bottom / 2),
+                      child: EntryTagList(
+                        notSelected: _tags,
+                        onAdded: (tag) => setState(() {
+                          _onSearchPressed(tag: tag);
+                        }),
+                      ),
+                    ),
+                  ),
               ],
               idCards: idCards,
               shouldSort: true,
@@ -149,10 +207,14 @@ class _IDCardsScreen extends State<IDCardsScreen> {
                             ?.status ==
                         EntryStatus.alive;
                 if (idCard == null) return;
-                if (mounted) {
+                if (context.mounted) {
                   Navigator.pushNamed(context, IDCardScreen.routeName,
-                      arguments: EntryScreenArgs(
-                          entry: idCard, isFavorite: isFavorite));
+                          arguments: EntryScreenArgs(
+                              entry: idCard, isFavorite: isFavorite))
+                      .then((value) {
+                    if (_isLoading) return;
+                    _load().then((value) => _isLoading = false);
+                  });
                 }
               },
               popupMenuItemBuilder: idCardPopupMenuBuilder,

@@ -46,7 +46,8 @@ class _MainScreen extends State<MainScreen>
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
 
   Widget _searchBuilder(
-    String terms, {
+    String terms,
+    List<String> tags, {
     required Map<String, IDCardMeta> idCardsMetadata,
     required Map<String, IdentityMeta> identitiesMetadata,
     required Map<String, NoteMeta> notesMetadata,
@@ -83,32 +84,40 @@ class _MainScreen extends State<MainScreen>
           name: idCard.nickname,
           description: idCard.name,
           type: EntryType.idCard,
-          meta: idCard));
+          meta: idCard,
+          tags: idCard.tags));
     }
     for (IdentityMeta identity in identitiesMetadata.values) {
       searchEntries.add(SearchEntryData(
           name: identity.nickname,
           description: identity.firstAddressLine,
           type: EntryType.identity,
-          meta: identity));
+          meta: identity,
+          tags: identity.tags));
     }
     for (NoteMeta note in notesMetadata.values) {
       searchEntries.add(SearchEntryData(
-          name: note.title, description: '', type: EntryType.note, meta: note));
+          name: note.title,
+          description: '',
+          type: EntryType.note,
+          meta: note,
+          tags: note.tags));
     }
     for (PasswordMeta password in passwordsMetadata.values) {
       searchEntries.add(SearchEntryData(
           name: password.nickname,
           description: password.username,
           type: EntryType.password,
-          meta: password));
+          meta: password,
+          tags: password.tags));
     }
     for (PaymentCardMeta paymentCard in paymentCardsMetadata.values) {
       searchEntries.add(SearchEntryData(
           name: paymentCard.nickname,
           description: paymentCard.cardholderName,
           type: EntryType.paymentCard,
-          meta: paymentCard));
+          meta: paymentCard,
+          tags: paymentCard.tags));
     }
     for (SearchEntryData searchEntry in searchEntries) {
       {
@@ -118,6 +127,14 @@ class _MainScreen extends State<MainScreen>
         if (found.any(testSearchEntry)) continue;
       }
       {
+        bool tagMismatch = false;
+        for (String tag in tags) {
+          if (!searchEntry.tags.contains(tag)) {
+            tagMismatch = true;
+            break;
+          }
+        }
+        if (tagMismatch) continue;
         int positiveCount = 0;
         for (String term in termsSplit) {
           if (searchEntry.name.toLowerCase().contains(term)) {
@@ -193,7 +210,9 @@ class _MainScreen extends State<MainScreen>
   }
 
   Widget _favoritesSearchBuilder(
-    String terms, {
+    String terms,
+    List<String> tags,
+    void Function() setState, {
     required Map<String, IDCardMeta> idCardsMetadata,
     required Map<String, IdentityMeta> identitiesMetadata,
     required Map<String, NoteMeta> notesMetadata,
@@ -246,7 +265,8 @@ class _MainScreen extends State<MainScreen>
           name: idCard.nickname,
           description: idCard.name,
           type: EntryType.idCard,
-          meta: idCard));
+          meta: idCard,
+          tags: idCard.tags));
     }
     for (EntryEvent event in favoriteIdentities.values) {
       if (event.status == EntryStatus.removed) continue;
@@ -256,14 +276,19 @@ class _MainScreen extends State<MainScreen>
           name: identity.nickname,
           description: identity.firstAddressLine,
           type: EntryType.identity,
-          meta: identity));
+          meta: identity,
+          tags: identity.tags));
     }
     for (EntryEvent event in favoriteNotes.values) {
       if (event.status == EntryStatus.removed) continue;
       NoteMeta? note = notesMetadata[event.key];
       if (note == null) continue;
       searchEntries.add(SearchEntryData(
-          name: note.title, description: '', type: EntryType.note, meta: note));
+          name: note.title,
+          description: '',
+          type: EntryType.note,
+          meta: note,
+          tags: note.tags));
     }
     for (EntryEvent event in favoritePasswords.values) {
       if (event.status == EntryStatus.removed) continue;
@@ -273,7 +298,8 @@ class _MainScreen extends State<MainScreen>
           name: password.nickname,
           description: password.username,
           type: EntryType.password,
-          meta: password));
+          meta: password,
+          tags: password.tags));
     }
     for (EntryEvent event in favoritePaymentCards.values) {
       if (event.status == EntryStatus.removed) continue;
@@ -283,7 +309,8 @@ class _MainScreen extends State<MainScreen>
           name: paymentCard.nickname,
           description: paymentCard.cardholderName,
           type: EntryType.paymentCard,
-          meta: paymentCard));
+          meta: paymentCard,
+          tags: paymentCard.tags));
     }
     for (SearchEntryData searchEntry in searchEntries) {
       {
@@ -293,6 +320,14 @@ class _MainScreen extends State<MainScreen>
         if (found.any(testSearchEntry)) continue;
       }
       {
+        bool tagMismatch = false;
+        for (String tag in tags) {
+          if (!searchEntry.tags.contains(tag)) {
+            tagMismatch = true;
+            break;
+          }
+        }
+        if (tagMismatch) continue;
         int positiveCount = 0;
         for (String term in termsSplit) {
           if (searchEntry.name.toLowerCase().contains(term)) {
@@ -361,7 +396,8 @@ class _MainScreen extends State<MainScreen>
             routeName = PaymentCardScreen.routeName;
             break;
         }
-        Navigator.pushNamed(context, routeName, arguments: args);
+        Navigator.pushNamed(context, routeName, arguments: args)
+            .then((value) => setState());
       },
       popupMenuItemBuilder: passyEntryPopupMenuItemBuilder,
     );
@@ -454,12 +490,15 @@ class _MainScreen extends State<MainScreen>
           Map<String, EntryEvent>? favoritePaymentCards =
               await data.getFavoritePaymentCards();
           if (favoritePaymentCards == null) return;
-          if (mounted) {
+          if (context.mounted) {
             Navigator.pushNamed(context, SearchScreen.routeName,
                 arguments: SearchScreenArgs(
                   title: localizations.favorites,
-                  builder: (terms) => _favoritesSearchBuilder(
+                  entryType: null,
+                  builder: (terms, tags, rebuild) => _favoritesSearchBuilder(
                     terms,
+                    tags,
+                    rebuild,
                     idCardsMetadata: idCards,
                     identitiesMetadata: identities,
                     passwordsMetadata: passwords,
@@ -496,12 +535,14 @@ class _MainScreen extends State<MainScreen>
           Map<String, PaymentCardMeta>? paymentCards =
               await data.getPaymentCardsMetadata();
           if (paymentCards == null) return;
-          if (mounted) {
+          if (context.mounted) {
             Navigator.pushNamed(context, SearchScreen.routeName,
                 arguments: SearchScreenArgs(
+                  entryType: null,
                   title: localizations.allEntries,
-                  builder: (terms) => _searchBuilder(
+                  builder: (terms, tags, rebuild) => _searchBuilder(
                     terms,
+                    tags,
                     idCardsMetadata: idCards,
                     identitiesMetadata: identities,
                     passwordsMetadata: passwords,
@@ -523,7 +564,7 @@ class _MainScreen extends State<MainScreen>
           List<PasswordMeta> passwords =
               (await data.getPasswordsMetadata())?.values.toList() ??
                   <PasswordMeta>[];
-          if (mounted) {
+          if (context.mounted) {
             Navigator.pushNamed(context, PasswordsScreen.routeName,
                 arguments: passwords);
           }
@@ -540,7 +581,7 @@ class _MainScreen extends State<MainScreen>
           List<PaymentCardMeta> paymentCards =
               (await data.getPaymentCardsMetadata())?.values.toList() ??
                   <PaymentCardMeta>[];
-          if (mounted) {
+          if (context.mounted) {
             Navigator.pushNamed(context, PaymentCardsScreen.routeName,
                 arguments: paymentCards);
           }
@@ -556,7 +597,7 @@ class _MainScreen extends State<MainScreen>
         onPressed: () async {
           List<NoteMeta> notes =
               (await data.getNotesMetadata())?.values.toList() ?? <NoteMeta>[];
-          if (mounted) {
+          if (context.mounted) {
             Navigator.pushNamed(context, NotesScreen.routeName,
                 arguments: notes);
           }
@@ -573,7 +614,7 @@ class _MainScreen extends State<MainScreen>
           List<IDCardMeta> idCards =
               (await data.getIDCardsMetadata())?.values.toList() ??
                   <IDCardMeta>[];
-          if (mounted) {
+          if (context.mounted) {
             Navigator.pushNamed(context, IDCardsScreen.routeName,
                 arguments: idCards);
           }
@@ -590,7 +631,7 @@ class _MainScreen extends State<MainScreen>
           List<IdentityMeta> identities =
               (await data.getIdentitiesMetadata())?.values.toList() ??
                   <IdentityMeta>[];
-          if (mounted) {
+          if (context.mounted) {
             Navigator.pushNamed(context, IdentitiesScreen.routeName,
                 arguments: identities);
           }
@@ -598,8 +639,9 @@ class _MainScreen extends State<MainScreen>
       )),
     ];
 
-    return WillPopScope(
-      onWillPop: () => logoutOnWillPop(this),
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (isPopped) => logoutOnWillPop(this),
       child: Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: false,
@@ -634,12 +676,14 @@ class _MainScreen extends State<MainScreen>
                 Map<String, PaymentCardMeta>? paymentCards =
                     await data.getPaymentCardsMetadata();
                 if (paymentCards == null) return;
-                if (mounted) {
+                if (context.mounted) {
                   Navigator.pushNamed(context, SearchScreen.routeName,
                       arguments: SearchScreenArgs(
+                        entryType: null,
                         title: localizations.allEntries,
-                        builder: (terms) => _searchBuilder(
+                        builder: (terms, tags, rebuild) => _searchBuilder(
                           terms,
+                          tags,
                           idCardsMetadata: idCards,
                           identitiesMetadata: identities,
                           passwordsMetadata: passwords,

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:passy_browser_extension/screens/common/entry_screen_args.dart';
 
@@ -22,82 +23,125 @@ class IdentitiesScreen extends StatefulWidget {
 }
 
 class _IdentitiesScreen extends State<IdentitiesScreen> {
+  List<String> _tags = [];
+  bool _isLoaded = false;
+  bool _isLoading = false;
+
   void _onAddPressed() =>
       Navigator.pushNamed(context, EditIdentityScreen.routeName);
 
-  void _onSearchPressed() {
+  void _onSearchPressed({String? tag}) {
     Navigator.pushNamed(context, SearchScreen.routeName,
-        arguments: SearchScreenArgs(builder: (String terms) {
-      List<IdentityMeta> identitiesMetadata =
-          ModalRoute.of(context)!.settings.arguments as List<IdentityMeta>;
-      final List<IdentityMeta> found = [];
-      final List<String> termsSplit = terms.trim().toLowerCase().split(' ');
-      for (IdentityMeta identity in identitiesMetadata) {
-        {
-          bool testIdentity(IdentityMeta value) => identity.key == value.key;
+        arguments: SearchScreenArgs(
+            entryType: EntryType.identity,
+            selectedTags: tag == null ? [] : [tag],
+            builder:
+                (String terms, List<String> tags, void Function() rebuild) {
+              final List<IdentityMeta> found = [];
+              final List<String> termsList =
+                  terms.trim().toLowerCase().split(' ');
+              final List<IdentityMeta> identities = ModalRoute.of(context)!
+                  .settings
+                  .arguments as List<IdentityMeta>;
+              for (IdentityMeta identity in identities) {
+                {
+                  bool testIdentity(IdentityMeta value) =>
+                      identity.key == value.key;
 
-          if (found.any(testIdentity)) continue;
-        }
-        {
-          int positiveCount = 0;
-          for (String term in termsSplit) {
-            if (identity.firstAddressLine.toLowerCase().contains(term)) {
-              positiveCount++;
-              continue;
-            }
-            if (identity.nickname.toLowerCase().contains(term)) {
-              positiveCount++;
-              continue;
-            }
-          }
-          if (positiveCount == termsSplit.length) {
-            found.add(identity);
-          }
-        }
-      }
-      if (found.isEmpty) {
-        return CustomScrollView(
-          slivers: [
-            SliverFillRemaining(
-              child: Column(
-                children: [
-                  const Spacer(flex: 7),
-                  Text(
-                    localizations.noSearchResults,
-                    textAlign: TextAlign.center,
-                  ),
-                  const Spacer(flex: 7),
-                ],
-              ),
-            ),
-          ],
-        );
-      }
-      return IdentityButtonListView(
-        identities: found,
-        shouldSort: true,
-        onPressed: (identityMeta) async {
-          Identity? identity = await data.getIdentity(identityMeta.key);
-          if (identity == null) return;
-          bool isFavorite =
-              (await data.getFavoriteIdentities())?[identityMeta.key]?.status ==
-                  EntryStatus.alive;
-          if (mounted) {
-            Navigator.pushNamed(
-              context,
-              IdentityScreen.routeName,
-              arguments:
-                  EntryScreenArgs(entry: identity, isFavorite: isFavorite),
-            );
-          }
-        },
-        popupMenuItemBuilder: identityPopupMenuBuilder,
-      );
-    }));
+                  if (found.any(testIdentity)) continue;
+                }
+                {
+                  bool tagMismatch = false;
+                  for (String tag in tags) {
+                    if (!identity.tags.contains(tag)) {
+                      tagMismatch = true;
+                      break;
+                    }
+                  }
+                  if (tagMismatch) continue;
+                  int positiveCount = 0;
+                  for (String term in termsList) {
+                    if (identity.firstAddressLine
+                        .toLowerCase()
+                        .contains(term)) {
+                      positiveCount++;
+                      continue;
+                    }
+                    if (identity.nickname.toLowerCase().contains(term)) {
+                      positiveCount++;
+                      continue;
+                    }
+                  }
+                  if (positiveCount == termsList.length) {
+                    found.add(identity);
+                  }
+                }
+              }
+              if (found.isEmpty) {
+                return CustomScrollView(
+                  slivers: [
+                    SliverFillRemaining(
+                      hasScrollBody: false,
+                      child: Column(
+                        children: [
+                          const Spacer(flex: 7),
+                          Text(
+                            localizations.noSearchResults,
+                            textAlign: TextAlign.center,
+                          ),
+                          const Spacer(flex: 7),
+                        ],
+                      ),
+                    ),
+                  ],
+                );
+              }
+              return IdentityButtonListView(
+                identities: found,
+                shouldSort: true,
+                onPressed: (identityMeta) async {
+                  Identity? identity = await data.getIdentity(identityMeta.key);
+                  if (identity == null) return;
+                  bool isFavorite =
+                      (await data.getFavoriteIDCards())?[identity.key]
+                              ?.status ==
+                          EntryStatus.alive;
+                  if (!mounted) return;
+                  Navigator.pushNamed(
+                    context,
+                    IdentityScreen.routeName,
+                    arguments: EntryScreenArgs(
+                        entry: identity, isFavorite: isFavorite),
+                  );
+                },
+                popupMenuItemBuilder: identityPopupMenuBuilder,
+              );
+            }));
+  }
+
+  Future<void> _load() async {
+    _isLoaded = true;
+    _isLoading = true;
+    List<String> newTags;
+    try {
+      newTags = await data.identitiesTags;
+    } catch (_) {
+      return;
+    }
+    newTags.sort();
+    if (listEquals(newTags, _tags)) {
+      return;
+    }
+    if (mounted) {
+      setState(() {
+        _tags = newTags;
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    if (!_isLoaded) _load().whenComplete(() => _isLoading = false);
     List<IdentityMeta> identities =
         ModalRoute.of(context)!.settings.arguments as List<IdentityMeta>;
     return Scaffold(
@@ -142,6 +186,20 @@ class _IdentitiesScreen extends State<IdentitiesScreen> {
                         context, EditIdentityScreen.routeName),
                   ),
                 ),
+                if (_tags.isNotEmpty)
+                  Center(
+                    child: Padding(
+                      padding: EdgeInsets.only(
+                          top: PassyTheme.passyPadding.top / 2,
+                          bottom: PassyTheme.passyPadding.bottom / 2),
+                      child: EntryTagList(
+                        notSelected: _tags,
+                        onAdded: (tag) => setState(() {
+                          _onSearchPressed(tag: tag);
+                        }),
+                      ),
+                    ),
+                  ),
               ],
               identities: identities,
               shouldSort: true,
@@ -152,13 +210,16 @@ class _IdentitiesScreen extends State<IdentitiesScreen> {
                     (await data.getFavoriteIdentities())?[identityMeta.key]
                             ?.status ==
                         EntryStatus.alive;
-                if (mounted) {
+                if (context.mounted) {
                   Navigator.pushNamed(
                     context,
                     IdentityScreen.routeName,
                     arguments: EntryScreenArgs(
                         entry: identity, isFavorite: isFavorite),
-                  );
+                  ).then((value) {
+                    if (_isLoading) return;
+                    _load().then((value) => _isLoading = false);
+                  });
                 }
               },
               popupMenuItemBuilder: identityPopupMenuBuilder,

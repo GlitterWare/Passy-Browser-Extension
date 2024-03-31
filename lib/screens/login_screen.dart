@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:passy_browser_extension/common/js_interop.dart';
 import 'package:passy_browser_extension/passy_browser_extension_flutter/passy_browser_extensions_flutter.dart';
+import 'package:passy_browser_extension/passy_data/entry_type.dart';
 import 'package:passy_browser_extension/passy_data/passy_search.dart';
 
 import '../common/assets.dart';
@@ -29,9 +30,10 @@ class _LoginScreen extends State<LoginScreen> {
   String _password = '';
   String _username = data.lastUsername;
 
-  Widget _buildPasswords(Iterable<PasswordMeta> passwords, String terms) {
+  Widget _buildPasswords(Iterable<PasswordMeta> passwords, String terms,
+      List<String> tags, void Function() rebuild) {
     List<PasswordMeta> found =
-        PassySearch.searchPasswords(passwords: passwords, terms: terms);
+        PassySearch.searchPasswords(passwords: passwords, terms: terms, tags: tags);
     return PasswordButtonListView(
       passwords: found,
       onPressed: (passwordMeta) async {
@@ -65,7 +67,9 @@ class _LoginScreen extends State<LoginScreen> {
         context,
         SearchScreen.routeName,
         arguments: SearchScreenArgs(
-          builder: (terms) => _buildPasswords(passwords, terms),
+          entryType: EntryType.password,
+          builder: (terms, tags, rebuild) =>
+              _buildPasswords(passwords, terms, tags, rebuild),
         ),
       );
     }

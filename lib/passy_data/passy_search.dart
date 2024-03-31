@@ -1,11 +1,15 @@
 import 'package:passy_browser_extension/passy_data/password.dart';
 
 class PassySearch {
-  static List<PasswordMeta> searchPasswords(
-      {required Iterable<PasswordMeta> passwords, required String terms}) {
+  static List<PasswordMeta> searchPasswords({
+    required Iterable<PasswordMeta> passwords,
+    required String terms,
+    List<String> tags = const [],
+  }) {
     final List<PasswordMeta> found = [];
-    final List<String> terms0 = terms.trim().toLowerCase().split(' ');
+    final List<String> termsSplit = terms.trim().toLowerCase().split(' ');
     for (PasswordMeta password in passwords) {
+      if (password.tags.length < tags.length) continue;
       {
         bool testPassword(PasswordMeta value) => password.key == value.key;
 
@@ -13,7 +17,15 @@ class PassySearch {
       }
       {
         int positiveCount = 0;
-        for (String term in terms0) {
+        bool tagMismatch = false;
+        for (String tag in tags) {
+          if (!password.tags.contains(tag)) {
+            tagMismatch = true;
+            break;
+          }
+        }
+        if (tagMismatch) continue;
+        for (String term in termsSplit) {
           if (password.username.toLowerCase().contains(term)) {
             positiveCount++;
             continue;
@@ -27,7 +39,7 @@ class PassySearch {
             continue;
           }
         }
-        if (positiveCount == terms0.length) {
+        if (positiveCount == termsSplit.length) {
           found.add(password);
         }
       }

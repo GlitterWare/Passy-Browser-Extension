@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../common/common.dart';
@@ -22,77 +23,117 @@ class NotesScreen extends StatefulWidget {
 }
 
 class _NotesScreen extends State<NotesScreen> {
+  List<String> _tags = [];
+  bool _isLoaded = false;
+  bool _isLoading = false;
+
   void _onAddPressed() =>
       Navigator.pushNamed(context, EditNoteScreen.routeName);
 
-  void _onSearchPressed() {
-    Navigator.pushNamed(context, SearchScreen.routeName,
-        arguments: SearchScreenArgs(builder: (String terms) {
-      List<NoteMeta> notesMetadata =
-          ModalRoute.of(context)!.settings.arguments as List<NoteMeta>;
-      final List<NoteMeta> found = [];
-      final List<String> termsSplit = terms.trim().toLowerCase().split(' ');
-      for (NoteMeta note in notesMetadata) {
-        {
-          bool testNote(NoteMeta value) => note.key == value.key;
+  void _onSearchPressed({String? tag}) {
+    Navigator.pushNamed(
+      context,
+      SearchScreen.routeName,
+      arguments: SearchScreenArgs(
+        entryType: EntryType.note,
+        selectedTags: tag == null ? [] : [tag],
+        builder: (String terms, List<String> tags, void Function() rebuild) {
+          final List<NoteMeta> found = [];
+          final List<String> termsList = terms.trim().toLowerCase().split(' ');
+          final List<NoteMeta> notes =
+              ModalRoute.of(context)!.settings.arguments as List<NoteMeta>;
+          for (NoteMeta note in notes) {
+            {
+              bool testNote(NoteMeta value) => note.key == value.key;
 
-          if (found.any(testNote)) continue;
-        }
-        {
-          int positiveCount = 0;
-          for (String term in termsSplit) {
-            if (note.title.toLowerCase().contains(term)) {
-              positiveCount++;
-              continue;
+              if (found.any(testNote)) continue;
+            }
+            {
+              bool tagMismatch = false;
+              for (String tag in tags) {
+                if (!note.tags.contains(tag)) {
+                  tagMismatch = true;
+                  break;
+                }
+              }
+              if (tagMismatch) continue;
+              int positiveCount = 0;
+              for (String term in termsList) {
+                if (note.title.toLowerCase().contains(term)) {
+                  positiveCount++;
+                  continue;
+                }
+              }
+              if (positiveCount == termsList.length) {
+                found.add(note);
+              }
             }
           }
-          if (positiveCount == termsSplit.length) {
-            found.add(note);
-          }
-        }
-      }
-      if (found.isEmpty) {
-        return CustomScrollView(
-          slivers: [
-            SliverFillRemaining(
-              child: Column(
-                children: [
-                  const Spacer(flex: 7),
-                  Text(
-                    localizations.noSearchResults,
-                    textAlign: TextAlign.center,
+          if (found.isEmpty) {
+            return CustomScrollView(
+              slivers: [
+                SliverFillRemaining(
+                  hasScrollBody: false,
+                  child: Column(
+                    children: [
+                      const Spacer(flex: 7),
+                      Text(
+                        localizations.noSearchResults,
+                        textAlign: TextAlign.center,
+                      ),
+                      const Spacer(flex: 7),
+                    ],
                   ),
-                  const Spacer(flex: 7),
-                ],
-              ),
-            ),
-          ],
-        );
-      }
-      return NoteButtonListView(
-        notes: found,
-        shouldSort: true,
-        onPressed: (noteMeta) async {
-          Note? note = await data.getNote(noteMeta.key);
-          if (note == null) return;
-          bool isFavorite =
-              (await data.getFavoriteNotes())?[noteMeta.key]?.status ==
-                  EntryStatus.alive;
-          if (mounted) {
-            Navigator.pushNamed(
-              context,
-              NoteScreen.routeName,
-              arguments: EntryScreenArgs(entry: note, isFavorite: isFavorite),
+                ),
+              ],
             );
           }
+          return NoteButtonListView(
+            notes: found,
+            shouldSort: true,
+            onPressed: (noteMeta) async {
+              Note? note = await data.getNote(noteMeta.key);
+              if (note == null) return;
+              bool isFavorite =
+                  (await data.getFavoriteIDCards())?[note.key]?.status ==
+                      EntryStatus.alive;
+              if (!mounted) return;
+              Navigator.pushNamed(
+                context,
+                NoteScreen.routeName,
+                arguments: EntryScreenArgs(entry: note, isFavorite: isFavorite),
+              );
+            },
+            popupMenuItemBuilder: notePopupMenuBuilder,
+          );
         },
-        popupMenuItemBuilder: notePopupMenuBuilder,
-      );
-    }));
+      ),
+    );
+  }
+
+  Future<void> _load() async {
+    _isLoaded = true;
+    _isLoading = true;
+    List<String> newTags;
+    try {
+      newTags = await data.notesTags;
+    } catch (_) {
+      return;
+    }
+    newTags.sort();
+    if (listEquals(newTags, _tags)) {
+      return;
+    }
+    if (mounted) {
+      setState(() {
+        _tags = newTags;
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    if (!_isLoaded) _load().whenComplete(() => _isLoading = false);
     List<NoteMeta> notes =
         ModalRoute.of(context)!.settings.arguments as List<NoteMeta>;
     return Scaffold(
@@ -137,6 +178,20 @@ class _NotesScreen extends State<NotesScreen> {
                         Navigator.pushNamed(context, EditNoteScreen.routeName),
                   ),
                 ),
+                if (_tags.isNotEmpty)
+                  Center(
+                    child: Padding(
+                      padding: EdgeInsets.only(
+                          top: PassyTheme.passyPadding.top / 2,
+                          bottom: PassyTheme.passyPadding.bottom / 2),
+                      child: EntryTagList(
+                        notSelected: _tags,
+                        onAdded: (tag) => setState(() {
+                          _onSearchPressed(tag: tag);
+                        }),
+                      ),
+                    ),
+                  ),
               ],
               notes: notes,
               shouldSort: true,
@@ -146,13 +201,17 @@ class _NotesScreen extends State<NotesScreen> {
                 bool isFavorite =
                     (await data.getFavoriteNotes())?[noteMeta.key]?.status ==
                         EntryStatus.alive;
-                if (mounted) {
+                if (context.mounted) {
                   Navigator.pushNamed(
                     context,
                     NoteScreen.routeName,
                     arguments:
                         EntryScreenArgs(entry: note, isFavorite: isFavorite),
-                  );
+                  ).then((value) {
+                    if (_isLoading) return;
+                    _load().then((value) => _isLoading = false);
+                  });
+                  
                 }
               },
               popupMenuItemBuilder: notePopupMenuBuilder,

@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
-
-import '../passy_data/entry_meta.dart';
-import '../passy_data/entry_type.dart';
-import '../passy_data/id_card.dart';
-import '../passy_data/identity.dart';
-import '../passy_data/note.dart';
-import '../passy_data/password.dart';
-import '../passy_data/payment_card.dart';
-import 'passy_flutter.dart';
+import '/passy_data/entry_meta.dart';
+import '/passy_data/entry_type.dart';
+import '/passy_data/id_card.dart';
+import '/passy_data/identity.dart';
+import '/passy_data/note.dart';
+import '/passy_data/password.dart';
+import '/passy_data/payment_card.dart';
+import '/passy_flutter/passy_flutter.dart';
 
 String _nameFromEntry(EntryType type, EntryMeta entry) {
   switch (type) {
@@ -43,24 +42,44 @@ String _descriptionFromEntry(EntryType type, EntryMeta entry) {
   }
 }
 
+List<String> _tagsFromEntry(EntryType type, EntryMeta entry) {
+  switch (type) {
+    case EntryType.idCard:
+      return (entry as IDCardMeta).tags;
+    case EntryType.identity:
+      return (entry as IdentityMeta).tags;
+    case EntryType.note:
+      return (entry as NoteMeta).tags;
+    case EntryType.password:
+      return (entry as PasswordMeta).tags;
+    case EntryType.paymentCard:
+      return (entry as PaymentCardMeta).tags;
+    default:
+      return [];
+  }
+}
+
 class SearchEntryData {
   final String name;
   final String description;
   final EntryType type;
   final EntryMeta meta;
+  final List<String> tags;
 
   SearchEntryData({
     required this.name,
     required this.description,
     required this.type,
     required this.meta,
+    required this.tags,
   });
 
   SearchEntryData.fromEntry({
     required this.type,
     required this.meta,
   })  : name = _nameFromEntry(type, meta),
-        description = _descriptionFromEntry(type, meta);
+        description = _descriptionFromEntry(type, meta),
+        tags = _tagsFromEntry(type, meta);
 
   static List<SearchEntryData> fromEntries({
     List<IDCardMeta>? idCards,
@@ -74,24 +93,32 @@ class SearchEntryData {
         name: idCard.nickname,
         description: idCard.name,
         type: EntryType.idCard,
-        meta: idCard)));
+        meta: idCard,
+        tags: idCard.tags)));
     identities?.forEach((identity) => result.add(SearchEntryData(
         name: identity.nickname,
         description: identity.firstAddressLine,
         type: EntryType.identity,
-        meta: identity)));
+        meta: identity,
+        tags: identity.tags)));
     notes?.forEach((note) => result.add(SearchEntryData(
-        name: note.title, description: '', type: EntryType.note, meta: note)));
+        name: note.title,
+        description: '',
+        type: EntryType.note,
+        meta: note,
+        tags: note.tags)));
     passwords?.forEach((password) => result.add(SearchEntryData(
         name: password.nickname,
         description: password.username,
         type: EntryType.password,
-        meta: password)));
+        meta: password,
+        tags: password.tags)));
     paymentCards?.forEach((paymentCard) => result.add(SearchEntryData(
         name: paymentCard.nickname,
         description: paymentCard.cardholderName,
         type: EntryType.paymentCard,
-        meta: paymentCard)));
+        meta: paymentCard,
+        tags: paymentCard.tags)));
     return result;
   }
 
