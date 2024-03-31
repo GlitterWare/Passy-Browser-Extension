@@ -27,7 +27,8 @@
                 "canvaskit",
                 "index.html",
                 "index.js",
-                "main.dart.js"
+                "main.dart.js",
+                "icons/Icon-48.png"
             ],
             "matches": ["<all_urls>"]
         }

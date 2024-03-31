@@ -21,9 +21,11 @@ const indexUrl = browser.runtime.getURL('index.html');
 var extensionPathUrl = browser.runtime.getURL('');
 extensionPathUrl = extensionPathUrl.substring(0, extensionPathUrl.length - 1);
 var lastElement = null;
+var collapsed = false;
 
 function loadEmbed() {
   const autofillPopup = document.getElementById('passy-autofill-popup');
+  if (collapsed) return;
   if (autofillPopup != null) return;
   document.body.insertAdjacentHTML('beforeend', `<div id="passy-autofill-popup" style="visibility: visible !important; position: absolute !important; top: 401px !important; left: 557px !important; z-index: 100000 !important"><iframe src="${indexUrl}"
       frameborder="0" 
@@ -34,11 +36,43 @@ function loadEmbed() {
       height="350"></iframe></div>`);
 }
 
-function unloadEmbed() {
-  const autofillPopup = document.getElementById('passy-autofill-popup');
-  if (autofillPopup == null) return;
-  autofillPopup.remove();
-  if (lastElement != null) lastElement.focus();
+function collapse() {
+  var autofillPopup = document.getElementById('passy-autofill-popup');
+  if (autofillPopup != null) autofillPopup.remove();
+  collapsed = true;
+  document.body.insertAdjacentHTML('beforeend', `<div id="passy-autofill-popup" style="visibility: visible !important; position: absolute !important; top: 401px !important; left: 557px !important; z-index: 100000 !important"><div
+      display="block"
+      style="background-color: black !important ; width: 40px !important ; height: 40px !important ; cursor: pointer"
+      frameborder="0" 
+      marginheight="0" 
+      marginwidth="0" 
+      scrolling="auto"
+      onclick="expand()"><img
+        style="width: 40px !important ; height: 40px !important ; padding: 5px !important"
+        src="${extensionPathUrl}/icons/Icon-48.png"
+        alt="Passy"
+      /></div></div>`);
+  autofillPopup = document.getElementById('passy-autofill-popup');
+  autofillPopup.addEventListener('click', function handleClick(event) {
+    expand();
+  });
+  if (lastElement == null) return;
+  const rect = getOffset(lastElement);
+  autofillPopup.style.left = `${rect.left + lastElement.clientWidth - 40}px`;
+  autofillPopup.style.top = `${rect.top + lastElement.clientHeight}px`;
+  lastElement.focus();
+}
+
+function expand() {
+  var autofillPopup = document.getElementById('passy-autofill-popup');
+  if (autofillPopup != null) autofillPopup.remove();
+  collapsed = false;
+  loadEmbed();
+  autofillPopup = document.getElementById('passy-autofill-popup');
+  autofillPopup.style.visibility = 'visible';
+  const rect = getOffset(lastElement);
+  autofillPopup.style.left = `${rect.left}px`;
+  autofillPopup.style.top = `${rect.top + lastElement.clientHeight}px`;
 }
 
 function elementCheck(element, query = null) {
@@ -70,7 +104,7 @@ async function handleEmbedMessage(event) {
   if (event.data.args.length == 0) return;
   switch (event.data.args[0]) {
     case 'unload_embed':
-      unloadEmbed();
+      collapse();
       return;
     case 'autofill':
       if (event.data.args.length == 1) return;
@@ -87,21 +121,26 @@ async function handleEmbedMessage(event) {
             if (elementCheck(input, passwordQuery)) {
               input.value = password;
               input.dispatchEvent(new Event('input', { bubbles: true }));
+              lastElement = input;
               continue;
             }
             if (elementCheck(input, emailQuery)) {
               input.value = email;
               input.dispatchEvent(new Event('input', { bubbles: true }));
+              lastElement = input;
               continue;
             }
             if (elementCheck(input, usernameQuery)) {
               input.value = username;
               input.dispatchEvent(new Event('input', { bubbles: true }));
+              lastElement = input;
               continue;
             }
           }
+          collapse();
           return;
       }
+      collapse();
       return;
   }
 }
@@ -120,15 +159,19 @@ function onFoucsin(_) {
   }
   if (el.tagName.toLowerCase() != 'input') return;
   if (!elementCheck(el)) {
-    unloadEmbed(); 
+    collapse();
     return;
   }
   lastElement = el;
-  loadEmbed();
+  collapse();
   var autofillPopup = document.getElementById('passy-autofill-popup');
   autofillPopup.style.visibility = 'visible';
   const rect = getOffset(el);
-  autofillPopup.style.left = `${rect.left}px`;
+  if (collapsed) {
+    autofillPopup.style.left = `${rect.left + el.clientWidth - 40}px`;
+  } else {
+    autofillPopup.style.left = `${rect.left}px`;
+  }
   autofillPopup.style.top = `${rect.top + el.clientHeight}px`;
 }
 onFoucsin();
