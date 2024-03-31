@@ -23,8 +23,29 @@ class IDCardScreen extends StatefulWidget {
 }
 
 class _IDCardScreen extends State<IDCardScreen> {
+  List<String> _tags = [];
+  List<String> _selected = [];
+  bool _tagsLoaded = false;
   bool isFavorite = false;
   bool isLoaded = false;
+
+  Future<void> _load(IDCard idCard) async {
+    List<String> newTags = await data.idCardsTags;
+    newTags.sort();
+    if (mounted) {
+      setState(() {
+        _tags = newTags;
+        _selected = idCard.tags.toList();
+        _selected.sort();
+        for (String tag in _selected) {
+          if (_tags.contains(tag)) {
+            _tags.remove(tag);
+          }
+        }
+        _tagsLoaded = true;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,6 +54,7 @@ class _IDCardScreen extends State<IDCardScreen> {
     final IDCard idCard = args.entry as IDCard;
     if (!isLoaded) {
       isLoaded = true;
+      _load(idCard);
       isFavorite = args.isFavorite;
     }
 
@@ -126,6 +148,105 @@ class _IDCardScreen extends State<IDCardScreen> {
       ),
       body: ListView(
         children: [
+          Center(
+            child: Padding(
+              padding: EdgeInsets.only(
+                  top: PassyTheme.passyPadding.top / 2,
+                  bottom: PassyTheme.passyPadding.bottom / 2),
+              child: !_tagsLoaded
+                  ? const CircularProgressIndicator()
+                  : EntryTagList(
+                      showAddButton: true,
+                      selected: _selected,
+                      notSelected: _tags,
+                      onSecondary: (tag) async {
+                        String? newTag = await showDialog(
+                          context: context,
+                          builder: (ctx) => RenameTagDialog(tag: tag),
+                        );
+                        if (newTag == null) return;
+                        if (newTag == tag) return;
+                        if (!context.mounted) return;
+                        Navigator.pushNamed(context, SplashScreen.routeName);
+                        try {
+                          bool result =
+                              await data.renameTag(tag: tag, newTag: newTag);
+                          if (!result) throw Exception('Not implemented');
+                        } catch (e) {
+                          if (context.mounted) Navigator.pop(context);
+                          showSnackBar(
+                            message: localizations.somethingWentWrong,
+                            icon: const Icon(Icons.error_outline_rounded,
+                                color: PassyTheme.darkContentColor),
+                          );
+                          return;
+                        }
+                        idCard.tags = _selected.toList();
+                        if (idCard.tags.contains(tag)) {
+                          idCard.tags.remove(tag);
+                          idCard.tags.add(newTag);
+                        }
+                        List<IDCardMeta> idCards =
+                            (await data.getIDCardsMetadata())
+                                    ?.values
+                                    .toList() ??
+                                <IDCardMeta>[];
+                        if (!context.mounted) return;
+                        Navigator.popUntil(context,
+                            (r) => r.settings.name == MainScreen.routeName);
+                        Navigator.pushNamed(context, IDCardsScreen.routeName,
+                            arguments: idCards);
+                        Navigator.pushNamed(context, IDCardScreen.routeName,
+                            arguments: idCard);
+                      },
+                      onAdded: (tag) async {
+                        if (idCard.tags.contains(tag)) return;
+                        Navigator.pushNamed(context, SplashScreen.routeName);
+                        idCard.tags = _selected.toList();
+                        idCard.tags.add(tag);
+                        await data.setIDCard(idCard);
+                        List<IDCardMeta> idCards =
+                            (await data.getIDCardsMetadata())
+                                    ?.values
+                                    .toList() ??
+                                <IDCardMeta>[];
+                        if (!context.mounted) return;
+                        Navigator.popUntil(context,
+                            (r) => r.settings.name == MainScreen.routeName);
+                        Navigator.pushNamed(context, IDCardsScreen.routeName,
+                            arguments: idCards);
+                        Navigator.pushNamed(
+                          context,
+                          IDCardScreen.routeName,
+                          arguments: EntryScreenArgs(
+                              entry: idCard, isFavorite: isFavorite),
+                        );
+                      },
+                      onRemoved: (tag) async {
+                        Navigator.pushNamed(context, SplashScreen.routeName);
+                        idCard.tags = _selected.toList();
+                        idCard.tags.remove(tag);
+                        await data.setIDCard(idCard);
+                        List<IDCardMeta> idCards =
+                            (await data.getIDCardsMetadata())
+                                    ?.values
+                                    .toList() ??
+                                <IDCardMeta>[];
+                        if (!context.mounted) return;
+                        Navigator.popUntil(context,
+                            (r) => r.settings.name == MainScreen.routeName);
+                        Navigator.pushNamed(context, IDCardsScreen.routeName,
+                            arguments: idCards);
+                        Navigator.pushNamed(
+                          context,
+                          IDCardScreen.routeName,
+                          arguments: EntryScreenArgs(
+                              entry: idCard, isFavorite: isFavorite),
+                        );
+                      },
+                    ),
+            ),
+          ),
           if (idCard.nickname != '')
             PassyPadding(RecordButton(
               title: localizations.nickname,

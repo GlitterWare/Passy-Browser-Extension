@@ -24,8 +24,29 @@ class IdentityScreen extends StatefulWidget {
 }
 
 class _IdentityScreen extends State<IdentityScreen> {
+  List<String> _tags = [];
+  List<String> _selected = [];
+  bool _tagsLoaded = false;
   bool isFavorite = false;
   bool isLoaded = false;
+
+  Future<void> _load(Identity identity) async {
+    List<String> newTags = await data.identitiesTags;
+    newTags.sort();
+    if (mounted) {
+      setState(() {
+        _tags = newTags;
+        _selected = identity.tags.toList();
+        _selected.sort();
+        for (String tag in _selected) {
+          if (_tags.contains(tag)) {
+            _tags.remove(tag);
+          }
+        }
+        _tagsLoaded = true;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,6 +55,7 @@ class _IdentityScreen extends State<IdentityScreen> {
     final Identity identity = args.entry as Identity;
     if (!isLoaded) {
       isLoaded = true;
+      _load(identity);
       isFavorite = args.isFavorite;
     }
 
@@ -128,6 +150,105 @@ class _IdentityScreen extends State<IdentityScreen> {
       ),
       body: ListView(
         children: [
+          Center(
+            child: Padding(
+              padding: EdgeInsets.only(
+                  top: PassyTheme.passyPadding.top / 2,
+                  bottom: PassyTheme.passyPadding.bottom / 2),
+              child: !_tagsLoaded
+                  ? const CircularProgressIndicator()
+                  : EntryTagList(
+                      showAddButton: true,
+                      selected: _selected,
+                      notSelected: _tags,
+                      onSecondary: (tag) async {
+                        String? newTag = await showDialog(
+                          context: context,
+                          builder: (ctx) => RenameTagDialog(tag: tag),
+                        );
+                        if (newTag == null) return;
+                        if (newTag == tag) return;
+                        if (!context.mounted) return;
+                        Navigator.pushNamed(context, SplashScreen.routeName);
+                        try {
+                          bool result =
+                              await data.renameTag(tag: tag, newTag: newTag);
+                          if (!result) throw Exception('Not implemented');
+                        } catch (e) {
+                          if (context.mounted) Navigator.pop(context);
+                          showSnackBar(
+                            message: localizations.somethingWentWrong,
+                            icon: const Icon(Icons.error_outline_rounded,
+                                color: PassyTheme.darkContentColor),
+                          );
+                          return;
+                        }
+                        identity.tags = _selected.toList();
+                        if (identity.tags.contains(tag)) {
+                          identity.tags.remove(tag);
+                          identity.tags.add(newTag);
+                        }
+                        List<IdentityMeta> identities =
+                            (await data.getIdentitiesMetadata())
+                                    ?.values
+                                    .toList() ??
+                                <IdentityMeta>[];
+                        if (!context.mounted) return;
+                        Navigator.popUntil(context,
+                            (r) => r.settings.name == MainScreen.routeName);
+                        Navigator.pushNamed(context, IdentitiesScreen.routeName,
+                            arguments: identities);
+                        Navigator.pushNamed(context, IdentityScreen.routeName,
+                            arguments: identity);
+                      },
+                      onAdded: (tag) async {
+                        if (identity.tags.contains(tag)) return;
+                        Navigator.pushNamed(context, SplashScreen.routeName);
+                        identity.tags = _selected.toList();
+                        identity.tags.add(tag);
+                        await data.setIdentity(identity);
+                        List<IdentityMeta> identities =
+                            (await data.getIdentitiesMetadata())
+                                    ?.values
+                                    .toList() ??
+                                <IdentityMeta>[];
+                        if (!context.mounted) return;
+                        Navigator.popUntil(context,
+                            (r) => r.settings.name == MainScreen.routeName);
+                        Navigator.pushNamed(context, IdentitiesScreen.routeName,
+                            arguments: identities);
+                        Navigator.pushNamed(
+                          context,
+                          IdentityScreen.routeName,
+                          arguments: EntryScreenArgs(
+                              entry: identity, isFavorite: isFavorite),
+                        );
+                      },
+                      onRemoved: (tag) async {
+                        Navigator.pushNamed(context, SplashScreen.routeName);
+                        identity.tags = _selected.toList();
+                        identity.tags.remove(tag);
+                        await data.setIdentity(identity);
+                        List<IdentityMeta> identities =
+                            (await data.getIdentitiesMetadata())
+                                    ?.values
+                                    .toList() ??
+                                <IdentityMeta>[];
+                        if (!context.mounted) return;
+                        Navigator.popUntil(context,
+                            (r) => r.settings.name == MainScreen.routeName);
+                        Navigator.pushNamed(context, IdentitiesScreen.routeName,
+                            arguments: identities);
+                        Navigator.pushNamed(
+                          context,
+                          IdentityScreen.routeName,
+                          arguments: EntryScreenArgs(
+                              entry: identity, isFavorite: isFavorite),
+                        );
+                      },
+                    ),
+            ),
+          ),
           if (identity.nickname != '')
             PassyPadding(RecordButton(
               title: localizations.nickname,

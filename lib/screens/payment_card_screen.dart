@@ -23,6 +23,9 @@ class PaymentCardScreen extends StatefulWidget {
 }
 
 class _PaymentCardScreen extends State<PaymentCardScreen> {
+  List<String> _tags = [];
+  List<String> _selected = [];
+  bool _tagsLoaded = false;
   bool isFavorite = false;
   bool isLoaded = false;
 
@@ -76,6 +79,24 @@ class _PaymentCardScreen extends State<PaymentCardScreen> {
     );
   }
 
+  Future<void> _load(PaymentCard paymentCard) async {
+    List<String> newTags = await data.paymentCardsTags;
+    newTags.sort();
+    if (mounted) {
+      setState(() {
+        _tags = newTags;
+        _selected = paymentCard.tags.toList();
+        _selected.sort();
+        for (String tag in _selected) {
+          if (_tags.contains(tag)) {
+            _tags.remove(tag);
+          }
+        }
+        _tagsLoaded = true;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final EntryScreenArgs args =
@@ -83,6 +104,7 @@ class _PaymentCardScreen extends State<PaymentCardScreen> {
     final PaymentCard paymentCard = args.entry as PaymentCard;
     if (!isLoaded) {
       isLoaded = true;
+      _load(paymentCard);
       isFavorite = args.isFavorite;
     }
 
@@ -125,6 +147,105 @@ class _PaymentCardScreen extends State<PaymentCardScreen> {
         },
       ),
       body: ListView(children: [
+        Center(
+          child: Padding(
+            padding: EdgeInsets.only(
+                top: PassyTheme.passyPadding.top / 2,
+                bottom: PassyTheme.passyPadding.bottom / 2),
+            child: !_tagsLoaded
+                ? const CircularProgressIndicator()
+                : EntryTagList(
+                    showAddButton: true,
+                    selected: _selected,
+                    notSelected: _tags,
+                    onSecondary: (tag) async {
+                      String? newTag = await showDialog(
+                        context: context,
+                        builder: (ctx) => RenameTagDialog(tag: tag),
+                      );
+                      if (newTag == null) return;
+                      if (newTag == tag) return;
+                      if (!context.mounted) return;
+                      Navigator.pushNamed(context, SplashScreen.routeName);
+                      try {
+                        bool result =
+                            await data.renameTag(tag: tag, newTag: newTag);
+                        if (!result) throw Exception('Not implemented');
+                      } catch (e) {
+                        if (context.mounted) Navigator.pop(context);
+                        showSnackBar(
+                          message: localizations.somethingWentWrong,
+                          icon: const Icon(Icons.error_outline_rounded,
+                              color: PassyTheme.darkContentColor),
+                        );
+                        return;
+                      }
+                      paymentCard.tags = _selected.toList();
+                      if (paymentCard.tags.contains(tag)) {
+                        paymentCard.tags.remove(tag);
+                        paymentCard.tags.add(newTag);
+                      }
+                      List<PaymentCardMeta> paymentCards =
+                          (await data.getPaymentCardsMetadata())
+                                  ?.values
+                                  .toList() ??
+                              <PaymentCardMeta>[];
+                      if (!context.mounted) return;
+                      Navigator.popUntil(context,
+                          (r) => r.settings.name == MainScreen.routeName);
+                      Navigator.pushNamed(context, PaymentCardsScreen.routeName,
+                          arguments: paymentCards);
+                      Navigator.pushNamed(context, PaymentCardScreen.routeName,
+                          arguments: paymentCard);
+                    },
+                    onAdded: (tag) async {
+                      if (paymentCard.tags.contains(tag)) return;
+                      Navigator.pushNamed(context, SplashScreen.routeName);
+                      paymentCard.tags = _selected.toList();
+                      paymentCard.tags.add(tag);
+                      await data.setPaymentCard(paymentCard);
+                      List<PaymentCardMeta> paymentCards =
+                          (await data.getPaymentCardsMetadata())
+                                  ?.values
+                                  .toList() ??
+                              <PaymentCardMeta>[];
+                      if (!context.mounted) return;
+                      Navigator.popUntil(context,
+                          (r) => r.settings.name == MainScreen.routeName);
+                      Navigator.pushNamed(context, PaymentCardsScreen.routeName,
+                          arguments: paymentCards);
+                      Navigator.pushNamed(
+                        context,
+                        PaymentCardScreen.routeName,
+                        arguments: EntryScreenArgs(
+                            entry: paymentCard, isFavorite: isFavorite),
+                      );
+                    },
+                    onRemoved: (tag) async {
+                      Navigator.pushNamed(context, SplashScreen.routeName);
+                      paymentCard.tags = _selected.toList();
+                      paymentCard.tags.remove(tag);
+                      await data.setPaymentCard(paymentCard);
+                      List<PaymentCardMeta> paymentCards =
+                          (await data.getPaymentCardsMetadata())
+                                  ?.values
+                                  .toList() ??
+                              <PaymentCardMeta>[];
+                      if (!context.mounted) return;
+                      Navigator.popUntil(context,
+                          (r) => r.settings.name == MainScreen.routeName);
+                      Navigator.pushNamed(context, PaymentCardsScreen.routeName,
+                          arguments: paymentCards);
+                      Navigator.pushNamed(
+                        context,
+                        PaymentCardScreen.routeName,
+                        arguments: EntryScreenArgs(
+                            entry: paymentCard, isFavorite: isFavorite),
+                      );
+                    },
+                  ),
+          ),
+        ),
         PaymentCardButton(
           paymentCard: paymentCard.uncensoredMetadata,
           obscureCardNumber: false,

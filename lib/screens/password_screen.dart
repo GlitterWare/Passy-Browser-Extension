@@ -30,6 +30,9 @@ class PasswordScreen extends StatefulWidget {
 
 class _PasswordScreen extends State<PasswordScreen> {
   final Completer<void> _onClosed = Completer<void>();
+  List<String> _tags = [];
+  List<String> _selected = [];
+  bool _tagsLoaded = false;
   Password? password;
   Future<void>? generateTFA;
   String _tfaCode = '';
@@ -148,6 +151,24 @@ class _PasswordScreen extends State<PasswordScreen> {
     );
   }
 
+  Future<void> _load() async {
+    List<String> newTags = await data.passwordsTags;
+    newTags.sort();
+    if (mounted) {
+      setState(() {
+        _tags = newTags;
+        _selected = password!.tags.toList();
+        _selected.sort();
+        for (String tag in _selected) {
+          if (_tags.contains(tag)) {
+            _tags.remove(tag);
+          }
+        }
+        _tagsLoaded = true;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     if (password == null) {
@@ -156,6 +177,7 @@ class _PasswordScreen extends State<PasswordScreen> {
       password = args.entry as Password;
       isFavorite = args.isFavorite;
       if (password!.tfa != null) generateTFA = _generateTFA(password!.tfa!);
+      _load();
     }
 
     return Scaffold(
@@ -198,6 +220,105 @@ class _PasswordScreen extends State<PasswordScreen> {
       ),
       body: ListView(
         children: [
+          Center(
+            child: Padding(
+              padding: EdgeInsets.only(
+                  top: PassyTheme.passyPadding.top / 2,
+                  bottom: PassyTheme.passyPadding.bottom / 2),
+              child: !_tagsLoaded
+                  ? const CircularProgressIndicator()
+                  : EntryTagList(
+                      showAddButton: true,
+                      selected: _selected,
+                      notSelected: _tags,
+                      onSecondary: (tag) async {
+                        String? newTag = await showDialog(
+                          context: context,
+                          builder: (ctx) => RenameTagDialog(tag: tag),
+                        );
+                        if (newTag == null) return;
+                        if (newTag == tag) return;
+                        if (!context.mounted) return;
+                        Navigator.pushNamed(context, SplashScreen.routeName);
+                        try {
+                          bool result =
+                              await data.renameTag(tag: tag, newTag: newTag);
+                          if (!result) throw Exception('Not implemented');
+                        } catch (e) {
+                          if (context.mounted) Navigator.pop(context);
+                          showSnackBar(
+                            message: localizations.somethingWentWrong,
+                            icon: const Icon(Icons.error_outline_rounded,
+                                color: PassyTheme.darkContentColor),
+                          );
+                          return;
+                        }
+                        password!.tags = _selected.toList();
+                        if (password!.tags.contains(tag)) {
+                          password!.tags.remove(tag);
+                          password!.tags.add(newTag);
+                        }
+                        List<PasswordMeta> passwords =
+                            (await data.getPasswordsMetadata())
+                                    ?.values
+                                    .toList() ??
+                                <PasswordMeta>[];
+                        if (!context.mounted) return;
+                        Navigator.popUntil(context,
+                            (r) => r.settings.name == MainScreen.routeName);
+                        Navigator.pushNamed(context, PasswordsScreen.routeName,
+                            arguments: passwords);
+                        Navigator.pushNamed(context, PasswordScreen.routeName,
+                            arguments: password!);
+                      },
+                      onAdded: (tag) async {
+                        if (password!.tags.contains(tag)) return;
+                        Navigator.pushNamed(context, SplashScreen.routeName);
+                        password!.tags = _selected.toList();
+                        password!.tags.add(tag);
+                        await data.setPassword(password!);
+                        List<PasswordMeta> passwords =
+                            (await data.getPasswordsMetadata())
+                                    ?.values
+                                    .toList() ??
+                                <PasswordMeta>[];
+                        if (!context.mounted) return;
+                        Navigator.popUntil(context,
+                            (r) => r.settings.name == MainScreen.routeName);
+                        Navigator.pushNamed(context, PasswordsScreen.routeName,
+                            arguments: passwords);
+                        Navigator.pushNamed(
+                          context,
+                          PasswordScreen.routeName,
+                          arguments: EntryScreenArgs(
+                              entry: password!, isFavorite: isFavorite),
+                        );
+                      },
+                      onRemoved: (tag) async {
+                        Navigator.pushNamed(context, SplashScreen.routeName);
+                        password!.tags = _selected.toList();
+                        password!.tags.remove(tag);
+                        await data.setPassword(password!);
+                        List<PasswordMeta> passwords =
+                            (await data.getPasswordsMetadata())
+                                    ?.values
+                                    .toList() ??
+                                <PasswordMeta>[];
+                        if (!context.mounted) return;
+                        Navigator.popUntil(context,
+                            (r) => r.settings.name == MainScreen.routeName);
+                        Navigator.pushNamed(context, PasswordsScreen.routeName,
+                            arguments: passwords);
+                        Navigator.pushNamed(
+                          context,
+                          PasswordScreen.routeName,
+                          arguments: EntryScreenArgs(
+                              entry: password!, isFavorite: isFavorite),
+                        );
+                      },
+                    ),
+            ),
+          ),
           if (password!.nickname != '')
             PassyPadding(RecordButton(
               title: localizations.nickname,

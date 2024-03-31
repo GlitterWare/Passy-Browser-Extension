@@ -24,6 +24,9 @@ class NoteScreen extends StatefulWidget {
 }
 
 class _NoteScreen extends State<NoteScreen> {
+  List<String> _tags = [];
+  List<String> _selected = [];
+  bool _tagsLoaded = false;
   bool isFavorite = false;
   bool isLoaded = false;
 
@@ -77,6 +80,24 @@ class _NoteScreen extends State<NoteScreen> {
     );
   }
 
+  Future<void> _load(Note note) async {
+    List<String> newTags = await data.notesTags;
+    newTags.sort();
+    if (mounted) {
+      setState(() {
+        _tags = newTags;
+        _selected = note.tags.toList();
+        _selected.sort();
+        for (String tag in _selected) {
+          if (_tags.contains(tag)) {
+            _tags.remove(tag);
+          }
+        }
+        _tagsLoaded = true;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final EntryScreenArgs args =
@@ -84,6 +105,7 @@ class _NoteScreen extends State<NoteScreen> {
     final Note note = args.entry as Note;
     if (!isLoaded) {
       isLoaded = true;
+      _load(note);
       isFavorite = args.isFavorite;
     }
 
@@ -126,6 +148,99 @@ class _NoteScreen extends State<NoteScreen> {
         },
       ),
       body: ListView(children: [
+        Center(
+          child: Padding(
+            padding: EdgeInsets.only(
+                top: PassyTheme.passyPadding.top / 2,
+                bottom: PassyTheme.passyPadding.bottom / 2),
+            child: !_tagsLoaded
+                ? const CircularProgressIndicator()
+                : EntryTagList(
+                    showAddButton: true,
+                    selected: _selected,
+                    notSelected: _tags,
+                    onSecondary: (tag) async {
+                      String? newTag = await showDialog(
+                        context: context,
+                        builder: (ctx) => RenameTagDialog(tag: tag),
+                      );
+                      if (newTag == null) return;
+                      if (newTag == tag) return;
+                      if (!context.mounted) return;
+                      Navigator.pushNamed(context, SplashScreen.routeName);
+                      try {
+                        bool result =
+                            await data.renameTag(tag: tag, newTag: newTag);
+                        if (!result) throw Exception('Not implemented');
+                      } catch (e) {
+                        if (context.mounted) Navigator.pop(context);
+                        showSnackBar(
+                          message: localizations.somethingWentWrong,
+                          icon: const Icon(Icons.error_outline_rounded,
+                              color: PassyTheme.darkContentColor),
+                        );
+                        return;
+                      }
+                      note.tags = _selected.toList();
+                      if (note.tags.contains(tag)) {
+                        note.tags.remove(tag);
+                        note.tags.add(newTag);
+                      }
+                      List<NoteMeta> notes =
+                          (await data.getNotesMetadata())?.values.toList() ??
+                              <NoteMeta>[];
+                      if (!context.mounted) return;
+                      Navigator.popUntil(context,
+                          (r) => r.settings.name == MainScreen.routeName);
+                      Navigator.pushNamed(context, NotesScreen.routeName,
+                          arguments: notes);
+                      Navigator.pushNamed(context, NoteScreen.routeName,
+                          arguments: note);
+                    },
+                    onAdded: (tag) async {
+                      if (note.tags.contains(tag)) return;
+                      Navigator.pushNamed(context, SplashScreen.routeName);
+                      note.tags = _selected.toList();
+                      note.tags.add(tag);
+                      await data.setNote(note);
+                      List<NoteMeta> notes =
+                          (await data.getNotesMetadata())?.values.toList() ??
+                              <NoteMeta>[];
+                      if (!context.mounted) return;
+                      Navigator.popUntil(context,
+                          (r) => r.settings.name == MainScreen.routeName);
+                      Navigator.pushNamed(context, NotesScreen.routeName,
+                          arguments: notes);
+                      Navigator.pushNamed(
+                        context,
+                        NoteScreen.routeName,
+                        arguments: EntryScreenArgs(
+                            entry: note, isFavorite: isFavorite),
+                      );
+                    },
+                    onRemoved: (tag) async {
+                      Navigator.pushNamed(context, SplashScreen.routeName);
+                      note.tags = _selected.toList();
+                      note.tags.remove(tag);
+                      await data.setNote(note);
+                      List<NoteMeta> notes =
+                          (await data.getNotesMetadata())?.values.toList() ??
+                              <NoteMeta>[];
+                      if (!context.mounted) return;
+                      Navigator.popUntil(context,
+                          (r) => r.settings.name == MainScreen.routeName);
+                      Navigator.pushNamed(context, NotesScreen.routeName,
+                          arguments: notes);
+                      Navigator.pushNamed(
+                        context,
+                        NotesScreen.routeName,
+                        arguments: EntryScreenArgs(
+                            entry: note, isFavorite: isFavorite),
+                      );
+                    },
+                  ),
+          ),
+        ),
         if (note.title != '')
           PassyPadding(
               RecordButton(title: localizations.title, value: note.title)),
