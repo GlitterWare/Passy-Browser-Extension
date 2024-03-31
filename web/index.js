@@ -76,3 +76,14 @@ function setCurrentEntry(currentEntry) {
   return browser.storage.local.set({ 'currentEntry': currentEntry })
 }
 
+window.addEventListener('load', function (ev) {
+  // Download main.dart.js
+  _flutter.loader.loadEntrypoint({
+    onEntrypointLoaded: async function(engineInitializer) {
+      // Initialize the Flutter engine
+      let appRunner = await engineInitializer.initializeEngine({useColorEmoji: true});
+      // Run the app
+      await appRunner.runApp();
+    }
+  });
+});
