@@ -247,7 +247,7 @@ class BrowserExtensionData {
   }) =>
       renameTag(tag: tag, newTag: newTag);
 
-  Future<List<String>> get passwordTags async {
+  Future<List<String>> get passwordsTags async {
     Map<String, PasswordMeta>? meta = await getPasswordsMetadata();
     if (meta == null) return [];
     List<List<String>> passwordTags =
@@ -255,6 +255,84 @@ class BrowserExtensionData {
     List<String> result = passwordTags.removeLast();
     for (List<String> tags in passwordTags) {
       for (String tag in tags) {
+        if (result.contains(tag)) continue;
+        result.add(tag);
+      }
+    }
+    return result;
+  }
+
+  Future<List<String>> get paymentCardsTags async {
+    Map<String, PaymentCardMeta>? meta = await getPaymentCardsMetadata();
+    if (meta == null) return [];
+    List<List<String>> paymentCardsTags =
+        (meta).values.map((value) => value.tags).toList();
+    List<String> result = paymentCardsTags.removeLast();
+    for (List<String> tags in paymentCardsTags) {
+      for (String tag in tags) {
+        if (result.contains(tag)) continue;
+        result.add(tag);
+      }
+    }
+    return result;
+  }
+
+  Future<List<String>> get notesTags async {
+    Map<String, NoteMeta>? meta = await getNotesMetadata();
+    if (meta == null) return [];
+    List<List<String>> noteTags =
+        (meta).values.map((value) => value.tags).toList();
+    List<String> result = noteTags.removeLast();
+    for (List<String> tags in noteTags) {
+      for (String tag in tags) {
+        if (result.contains(tag)) continue;
+        result.add(tag);
+      }
+    }
+    return result;
+  }
+
+  Future<List<String>> get idCardsTags async {
+    Map<String, IDCardMeta>? meta = await getIDCardsMetadata();
+    if (meta == null) return [];
+    List<List<String>> idCardsTags =
+        (meta).values.map((value) => value.tags).toList();
+    List<String> result = idCardsTags.removeLast();
+    for (List<String> tags in idCardsTags) {
+      for (String tag in tags) {
+        if (result.contains(tag)) continue;
+        result.add(tag);
+      }
+    }
+    return result;
+  }
+
+  Future<List<String>> get identitiesTags async {
+    Map<String, IdentityMeta>? meta = await getIdentitiesMetadata();
+    if (meta == null) return [];
+    List<List<String>> identitiesTags =
+        (meta).values.map((value) => value.tags).toList();
+    List<String> result = identitiesTags.removeLast();
+    for (List<String> tags in identitiesTags) {
+      for (String tag in tags) {
+        if (result.contains(tag)) continue;
+        result.add(tag);
+      }
+    }
+    return result;
+  }
+
+  Future<List<String>> get tags async {
+    List<List<String>> tags = await Future.wait([
+      passwordsTags,
+      notesTags,
+      paymentCardsTags,
+      idCardsTags,
+      identitiesTags,
+    ]);
+    List<String> result = tags.removeLast();
+    for (List<String> list in tags) {
+      for (String tag in list) {
         if (result.contains(tag)) continue;
         result.add(tag);
       }
