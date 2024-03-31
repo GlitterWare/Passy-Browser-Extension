@@ -242,4 +242,16 @@ abstract class JsInterop {
     if (response == 'true') return true;
     return false;
   }
+
+  renameTag(
+    String username, {
+    required EntryType type,
+    required String tag,
+    required String newTag,
+  }) async {
+    dynamic response =
+        await runCommand(['tags', 'rename', username, type.name, tag, newTag]);
+    if (response == 'true') return true;
+    return false;
+  }
 }

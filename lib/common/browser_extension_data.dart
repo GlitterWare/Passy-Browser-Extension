@@ -240,4 +240,25 @@ class BrowserExtensionData {
       toggleFavoriteEntry(type: EntryType.idCard, key: key, toggle: toggle);
   Future<bool> toggleFavoriteIdentity(String key, bool toggle) =>
       toggleFavoriteEntry(type: EntryType.identity, key: key, toggle: toggle);
+
+  Future<bool> renameTag({
+    required String tag,
+    required String newTag,
+  }) =>
+      renameTag(tag: tag, newTag: newTag);
+
+  Future<List<String>> get passwordTags async {
+    Map<String, PasswordMeta>? meta = await getPasswordsMetadata();
+    if (meta == null) return [];
+    List<List<String>> passwordTags =
+        (meta).values.map((value) => value.tags).toList();
+    List<String> result = passwordTags.removeLast();
+    for (List<String> tags in passwordTags) {
+      for (String tag in tags) {
+        if (result.contains(tag)) continue;
+        result.add(tag);
+      }
+    }
+    return result;
+  }
 }
