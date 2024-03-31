@@ -48,7 +48,8 @@ function collapse() {
       marginwidth="0" 
       scrolling="auto"
       onclick="expand()"><img
-        style="width: 40px !important ; height: 40px !important ; padding: 5px !important"
+        display="block"
+        style="width: 40px !important ; height: 40px !important ; padding: 5px !important ; box-sizing: border-box"
         src="${extensionPathUrl}/icons/Icon-48.png"
         alt="Passy"
       /></div></div>`);
