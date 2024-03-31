@@ -250,6 +250,7 @@ class BrowserExtensionData {
   Future<List<String>> get passwordsTags async {
     Map<String, PasswordMeta>? meta = await getPasswordsMetadata();
     if (meta == null) return [];
+    if (meta.isEmpty) return [];
     List<List<String>> passwordTags =
         (meta).values.map((value) => value.tags).toList();
     List<String> result = passwordTags.removeLast();
@@ -265,6 +266,7 @@ class BrowserExtensionData {
   Future<List<String>> get paymentCardsTags async {
     Map<String, PaymentCardMeta>? meta = await getPaymentCardsMetadata();
     if (meta == null) return [];
+    if (meta.isEmpty) return [];
     List<List<String>> paymentCardsTags =
         (meta).values.map((value) => value.tags).toList();
     List<String> result = paymentCardsTags.removeLast();
@@ -280,6 +282,7 @@ class BrowserExtensionData {
   Future<List<String>> get notesTags async {
     Map<String, NoteMeta>? meta = await getNotesMetadata();
     if (meta == null) return [];
+    if (meta.isEmpty) return [];
     List<List<String>> noteTags =
         (meta).values.map((value) => value.tags).toList();
     List<String> result = noteTags.removeLast();
@@ -295,6 +298,7 @@ class BrowserExtensionData {
   Future<List<String>> get idCardsTags async {
     Map<String, IDCardMeta>? meta = await getIDCardsMetadata();
     if (meta == null) return [];
+    if (meta.isEmpty) return [];
     List<List<String>> idCardsTags =
         (meta).values.map((value) => value.tags).toList();
     List<String> result = idCardsTags.removeLast();
@@ -310,6 +314,7 @@ class BrowserExtensionData {
   Future<List<String>> get identitiesTags async {
     Map<String, IdentityMeta>? meta = await getIdentitiesMetadata();
     if (meta == null) return [];
+    if (meta.isEmpty) return [];
     List<List<String>> identitiesTags =
         (meta).values.map((value) => value.tags).toList();
     List<String> result = identitiesTags.removeLast();
@@ -323,15 +328,16 @@ class BrowserExtensionData {
   }
 
   Future<List<String>> get tags async {
-    List<List<String>> tags = await Future.wait([
-      passwordsTags,
-      notesTags,
-      paymentCardsTags,
-      idCardsTags,
-      identitiesTags,
-    ]);
+    List<List<String>> tags = [
+      await passwordsTags,
+      await notesTags,
+      await paymentCardsTags,
+      await idCardsTags,
+      await identitiesTags,
+    ];
     List<String> result = tags.removeLast();
     for (List<String> list in tags) {
+      if (list.isEmpty) continue;
       for (String tag in list) {
         if (result.contains(tag)) continue;
         result.add(tag);
