@@ -28,7 +28,10 @@ class _IDCardsScreen extends State<IDCardsScreen> {
   bool _isLoading = false;
 
   void _onAddPressed() =>
-      Navigator.pushNamed(context, EditIDCardScreen.routeName);
+      Navigator.pushNamed(context, EditIDCardScreen.routeName).then((value) {
+        if (_isLoading) return;
+        _load().then((value) => _isLoading = false);
+      });
 
   void _onSearchPressed({String? tag}) {
     Navigator.pushNamed(context, SearchScreen.routeName,
@@ -160,9 +163,8 @@ class _IDCardsScreen extends State<IDCardsScreen> {
                       ),
                       const SizedBox(height: 16),
                       FloatingActionButton(
-                          child: const Icon(Icons.add_rounded),
-                          onPressed: () => Navigator.pushNamed(
-                              context, EditIDCardScreen.routeName)),
+                          onPressed: _onAddPressed,
+                          child: const Icon(Icons.add_rounded)),
                       const Spacer(flex: 7),
                     ],
                   ),
@@ -179,8 +181,7 @@ class _IDCardsScreen extends State<IDCardsScreen> {
                       textAlign: TextAlign.center,
                     ),
                     right: const Icon(Icons.arrow_forward_ios_rounded),
-                    onPressed: () => Navigator.pushNamed(
-                        context, EditIDCardScreen.routeName),
+                    onPressed: _onAddPressed,
                   ),
                 ),
                 if (_tags.isNotEmpty)

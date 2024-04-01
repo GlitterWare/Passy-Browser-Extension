@@ -29,7 +29,10 @@ class _PasswordsScreen extends State<PasswordsScreen> {
   bool _isLoading = false;
 
   void _onAddPressed() =>
-      Navigator.pushNamed(context, EditPasswordScreen.routeName);
+      Navigator.pushNamed(context, EditPasswordScreen.routeName).then((value) {
+        if (_isLoading) return;
+        _load().then((value) => _isLoading = false);
+      });
 
   Widget _buildPasswords(
     String terms,
@@ -131,9 +134,8 @@ class _PasswordsScreen extends State<PasswordsScreen> {
                       ),
                       const SizedBox(height: 16),
                       FloatingActionButton(
-                          child: const Icon(Icons.add_rounded),
-                          onPressed: () => Navigator.pushNamed(
-                              context, EditPasswordScreen.routeName)),
+                          onPressed: _onAddPressed,
+                          child: const Icon(Icons.add_rounded)),
                       const Spacer(flex: 7),
                     ],
                   ),
@@ -150,8 +152,7 @@ class _PasswordsScreen extends State<PasswordsScreen> {
                       textAlign: TextAlign.center,
                     ),
                     right: const Icon(Icons.arrow_forward_ios_rounded),
-                    onPressed: () => Navigator.pushNamed(
-                        context, EditPasswordScreen.routeName),
+                    onPressed: _onAddPressed,
                   ),
                 ),
                 if (_tags.isNotEmpty)

@@ -28,7 +28,10 @@ class _NotesScreen extends State<NotesScreen> {
   bool _isLoading = false;
 
   void _onAddPressed() =>
-      Navigator.pushNamed(context, EditNoteScreen.routeName);
+      Navigator.pushNamed(context, EditNoteScreen.routeName).then((value) {
+        if (_isLoading) return;
+        _load().then((value) => _isLoading = false);
+      });
 
   void _onSearchPressed({String? tag}) {
     Navigator.pushNamed(
@@ -155,9 +158,8 @@ class _NotesScreen extends State<NotesScreen> {
                       ),
                       const SizedBox(height: 16),
                       FloatingActionButton(
-                          child: const Icon(Icons.add_rounded),
-                          onPressed: () => Navigator.pushNamed(
-                              context, EditNoteScreen.routeName)),
+                          onPressed: _onAddPressed,
+                          child: const Icon(Icons.add_rounded)),
                       const Spacer(flex: 7),
                     ],
                   ),
@@ -174,8 +176,7 @@ class _NotesScreen extends State<NotesScreen> {
                       textAlign: TextAlign.center,
                     ),
                     right: const Icon(Icons.arrow_forward_ios_rounded),
-                    onPressed: () =>
-                        Navigator.pushNamed(context, EditNoteScreen.routeName),
+                    onPressed: _onAddPressed,
                   ),
                 ),
                 if (_tags.isNotEmpty)
@@ -211,7 +212,6 @@ class _NotesScreen extends State<NotesScreen> {
                     if (_isLoading) return;
                     _load().then((value) => _isLoading = false);
                   });
-                  
                 }
               },
               popupMenuItemBuilder: notePopupMenuBuilder,

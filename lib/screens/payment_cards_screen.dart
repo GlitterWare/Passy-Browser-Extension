@@ -121,7 +121,11 @@ class _PaymentCardsScreen extends State<PaymentCardsScreen> {
   }
 
   void _onAddPressed() =>
-      Navigator.pushNamed(context, EditPaymentCardScreen.routeName);
+      Navigator.pushNamed(context, EditPaymentCardScreen.routeName)
+          .then((value) {
+        if (_isLoading) return;
+        _load().then((value) => _isLoading = false);
+      });
 
   Future<void> _load() async {
     _isLoaded = true;
@@ -168,9 +172,8 @@ class _PaymentCardsScreen extends State<PaymentCardsScreen> {
                       ),
                       const SizedBox(height: 16),
                       FloatingActionButton(
-                          child: const Icon(Icons.add_rounded),
-                          onPressed: () => Navigator.pushNamed(
-                              context, EditPaymentCardScreen.routeName)),
+                          onPressed: _onAddPressed,
+                          child: const Icon(Icons.add_rounded)),
                       const Spacer(flex: 7),
                     ],
                   ),
@@ -181,15 +184,13 @@ class _PaymentCardsScreen extends State<PaymentCardsScreen> {
               topWidgets: [
                 PassyPadding(
                   ThreeWidgetButton(
-                    left: const Icon(Icons.add_rounded),
-                    center: Text(
-                      localizations.addPaymentCard,
-                      textAlign: TextAlign.center,
-                    ),
-                    right: const Icon(Icons.arrow_forward_ios_rounded),
-                    onPressed: () => Navigator.pushNamed(
-                        context, EditPaymentCardScreen.routeName),
-                  ),
+                      left: const Icon(Icons.add_rounded),
+                      center: Text(
+                        localizations.addPaymentCard,
+                        textAlign: TextAlign.center,
+                      ),
+                      right: const Icon(Icons.arrow_forward_ios_rounded),
+                      onPressed: _onAddPressed),
                 ),
                 if (_tags.isNotEmpty)
                   Center(
