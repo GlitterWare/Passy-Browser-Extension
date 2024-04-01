@@ -67,7 +67,7 @@ class _EditIdentityScreen extends State<EditIdentityScreen> {
         zipCode: _zipCode,
         city: _city,
         country: _country,
-            attachments: _attachments,
+        attachments: _attachments,
       );
       Navigator.pushNamed(context, SplashScreen.routeName);
       await data.setIdentity(identityArgs);
@@ -159,7 +159,7 @@ class _EditIdentityScreen extends State<EditIdentityScreen> {
         PassyPadding(EnumDropDownButtonFormField<id.Gender>(
           value: _gender,
           values: id.Gender.values,
-          getName: (id.Gender gender) => genderToReadableName(gender),
+          itemBuilder: (id.Gender gender) => Text(genderToReadableName(gender)),
           decoration: InputDecoration(labelText: localizations.gender),
           textCapitalization: TextCapitalization.words,
           onChanged: (value) {
