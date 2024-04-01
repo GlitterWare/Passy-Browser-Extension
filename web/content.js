@@ -36,6 +36,12 @@ function loadEmbed() {
       height="350"></iframe></div>`);
 }
 
+function unloadEmbed() {
+  const autofillPopup = document.getElementById('passy-autofill-popup');
+  if (autofillPopup == null) return;
+  autofillPopup.remove();
+}
+
 function collapse() {
   var autofillPopup = document.getElementById('passy-autofill-popup');
   if (autofillPopup != null) autofillPopup.remove();
@@ -158,6 +164,10 @@ function onFoucsin(_) {
       lastElement = null;
       return;
     }
+    if (!document.contains(lastElement)) {
+      lastElement = null;
+      unloadEmbed();
+    }
   }
   if (el.tagName.toLowerCase() != 'input') return;
   if (!elementCheck(el)) {
@@ -174,6 +184,20 @@ function onFoucsin(_) {
     autofillPopup.style.left = `${rect.left}px`;
   }
   autofillPopup.style.top = `${rect.top + el.clientHeight}px`;
+}
+
+function onFocusout(_) {
+  if (lastElement != null) {
+    const autofillPopup = document.getElementById('passy-autofill-popup');
+    if (autofillPopup == null) {
+      lastElement = null;
+      return;
+    }
+    if (!document.contains(lastElement)) {
+      lastElement = null;
+      unloadEmbed();
+    }
+  }
 }
 
 function onResize(_) {
@@ -193,4 +217,5 @@ function onResize(_) {
 onFoucsin();
 // not using innerHTML as it would break js event listeners of the page
 document.addEventListener('focusin', onFoucsin);
+document.addEventListener('focusout', onFocusout);
 window.addEventListener('resize', onResize);
