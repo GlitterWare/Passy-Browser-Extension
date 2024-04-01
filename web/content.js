@@ -176,7 +176,22 @@ function onFoucsin(_) {
   }
   autofillPopup.style.top = `${rect.top + el.clientHeight}px`;
 }
+
+function onResize(_) {
+  if (lastElement == null) return;
+  var autofillPopup = document.getElementById('passy-autofill-popup');
+  if (autofillPopup == null) return;
+  autofillPopup.style.visibility = 'visible';
+  const rect = getOffset(lastElement);
+  if (collapsed) {
+    autofillPopup.style.left = `${rect.left + lastElement.clientWidth - 40}px`;
+  } else {
+    autofillPopup.style.left = `${rect.left}px`;
+  }
+  autofillPopup.style.top = `${rect.top + lastElement.clientHeight}px`;
+}
+
 onFoucsin();
 // not using innerHTML as it would break js event listeners of the page
 document.addEventListener('focusin', onFoucsin);
-window.addEventListener('resize', onFoucsin);
+window.addEventListener('resize', onResize);
