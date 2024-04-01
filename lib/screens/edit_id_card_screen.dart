@@ -37,6 +37,7 @@ class _EditIDCardScreen extends State<EditIDCardScreen> {
   String _issDate = '';
   String _expDate = '';
   String _country = '';
+  List<String> _attachments = [];
 
   void _onSave() async {
     IDCard idCardArgs = IDCard(
@@ -52,6 +53,7 @@ class _EditIDCardScreen extends State<EditIDCardScreen> {
       issDate: _issDate,
       expDate: _expDate,
       country: _country,
+            attachments: _attachments,
     );
     Navigator.pushNamed(context, SplashScreen.routeName);
     await data.setIDCard(idCardArgs);
@@ -93,6 +95,7 @@ class _EditIDCardScreen extends State<EditIDCardScreen> {
         _issDate = idCardArgs.issDate;
         _expDate = idCardArgs.expDate;
         _country = idCardArgs.country;
+        _attachments = idCardArgs.attachments;
       }
       _isLoaded = true;
     }

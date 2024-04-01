@@ -43,6 +43,7 @@ class _EditIdentityScreen extends State<EditIdentityScreen> {
   String _zipCode = '';
   String _city = '';
   String _country = '';
+  List<String> _attachments = [];
 
   @override
   Widget build(BuildContext context) {
@@ -66,6 +67,7 @@ class _EditIdentityScreen extends State<EditIdentityScreen> {
         zipCode: _zipCode,
         city: _city,
         country: _country,
+            attachments: _attachments,
       );
       Navigator.pushNamed(context, SplashScreen.routeName);
       await data.setIdentity(identityArgs);
@@ -75,7 +77,7 @@ class _EditIdentityScreen extends State<EditIdentityScreen> {
       bool isFavorite =
           (await data.getFavoriteIdentities())?[identityArgs.key]?.status ==
               EntryStatus.alive;
-      if (!mounted) return;
+      if (!context.mounted) return;
       Navigator.popUntil(context, ModalRoute.withName(MainScreen.routeName));
       Navigator.pushNamed(context, IdentitiesScreen.routeName,
           arguments: identities);
@@ -113,6 +115,7 @@ class _EditIdentityScreen extends State<EditIdentityScreen> {
         _zipCode = identityArgs.zipCode;
         _city = identityArgs.city;
         _country = identityArgs.country;
+        _attachments = identityArgs.attachments;
       }
       _isLoaded = true;
     }

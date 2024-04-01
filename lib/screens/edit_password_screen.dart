@@ -47,6 +47,7 @@ class _EditPasswordScreen extends State<EditPasswordScreen> {
   bool _tfaIsGoogle = true;
   bool _tfaIsExpanded = false;
   String _website = '';
+  List<String> _attachments = [];
 
   @override
   Widget build(BuildContext context) {
@@ -80,6 +81,7 @@ class _EditPasswordScreen extends State<EditPasswordScreen> {
           _tfaIsGoogle = tfa.isGoogle;
         }
         _website = passwordArgs.website;
+        _attachments = passwordArgs.attachments;
       }
       _isLoaded = true;
     }
@@ -109,6 +111,7 @@ class _EditPasswordScreen extends State<EditPasswordScreen> {
                     isGoogle: _tfaIsGoogle,
                   ),
             website: _website,
+            attachments: _attachments,
           );
           Navigator.pushNamed(context, SplashScreen.routeName);
           await data.setPassword(passwordArgs);
@@ -127,7 +130,7 @@ class _EditPasswordScreen extends State<EditPasswordScreen> {
           bool isFavorite =
               (await data.getFavoritePasswords())?[passwordArgs.key]?.status ==
                   EntryStatus.alive;
-          if (!mounted) return;
+          if (!context.mounted) return;
           Navigator.popUntil(
               context, ModalRoute.withName(MainScreen.routeName));
           Navigator.pushNamed(context, PasswordsScreen.routeName,

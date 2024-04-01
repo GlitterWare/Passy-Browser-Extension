@@ -35,6 +35,7 @@ class _EditPaymentCardScreen extends State<EditPaymentCardScreen> {
   String _cardholderName = '';
   String _cvv = '';
   String _exp = '';
+  List<String> _attachments = [];
 
   @override
   void initState() {
@@ -73,6 +74,7 @@ class _EditPaymentCardScreen extends State<EditPaymentCardScreen> {
         _cardholderName = paymentCardArgs.cardholderName;
         _cvv = paymentCardArgs.cvv;
         _exp = paymentCardArgs.exp;
+        _attachments = paymentCardArgs.attachments;
       }
       _isLoaded = true;
     }
@@ -92,6 +94,7 @@ class _EditPaymentCardScreen extends State<EditPaymentCardScreen> {
             cardholderName: _cardholderName,
             cvv: _cvv,
             exp: _exp,
+            attachments: _attachments,
           );
           Navigator.pushNamed(context, SplashScreen.routeName);
           await data.setPaymentCard(paymentCardArgs);
@@ -102,7 +105,7 @@ class _EditPaymentCardScreen extends State<EditPaymentCardScreen> {
               (await data.getFavoritePaymentCards())?[paymentCardArgs.key]
                       ?.status ==
                   EntryStatus.alive;
-          if (!mounted) return;
+          if (!context.mounted) return;
           Navigator.popUntil(
               context, ModalRoute.withName(MainScreen.routeName));
           Navigator.pushNamed(context, PaymentCardsScreen.routeName,

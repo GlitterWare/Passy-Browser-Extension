@@ -29,6 +29,7 @@ class _EditNoteScreen extends State<EditNoteScreen> {
   String _title = '';
   String _note = '';
   bool _isMarkdown = false;
+  List<String> _attachments = [];
 
   @override
   Widget build(BuildContext context) {
@@ -41,6 +42,7 @@ class _EditNoteScreen extends State<EditNoteScreen> {
         _title = noteArgs.title;
         _note = noteArgs.note;
         _isMarkdown = noteArgs.isMarkdown;
+        _attachments = noteArgs.attachments;
       }
       _isLoaded = true;
     }
@@ -55,6 +57,7 @@ class _EditNoteScreen extends State<EditNoteScreen> {
             title: _title,
             note: _note,
             isMarkdown: _isMarkdown,
+            attachments: _attachments,
           );
           Navigator.pushNamed(context, SplashScreen.routeName);
           await data.setNote(noteArgs);
@@ -63,7 +66,7 @@ class _EditNoteScreen extends State<EditNoteScreen> {
           bool isFavorite =
               (await data.getFavoriteNotes())?[noteArgs.key]?.status ==
                   EntryStatus.alive;
-          if (!mounted) return;
+          if (!context.mounted) return;
           Navigator.popUntil(
               context, ModalRoute.withName(MainScreen.routeName));
           Navigator.pushNamed(context, NotesScreen.routeName, arguments: notes);
