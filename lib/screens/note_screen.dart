@@ -81,7 +81,7 @@ class _NoteScreen extends State<NoteScreen> {
   }
 
   Future<void> _load(Note note) async {
-    List<String> newTags = await data.notesTags;
+    List<String> newTags = await data.tags;
     newTags.sort();
     if (mounted) {
       setState(() {

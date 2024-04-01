@@ -152,7 +152,7 @@ class _PasswordScreen extends State<PasswordScreen> {
   }
 
   Future<void> _load() async {
-    List<String> newTags = await data.passwordsTags;
+    List<String> newTags = await data.tags;
     newTags.sort();
     if (mounted) {
       setState(() {

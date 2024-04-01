@@ -30,7 +30,7 @@ class _IDCardScreen extends State<IDCardScreen> {
   bool isLoaded = false;
 
   Future<void> _load(IDCard idCard) async {
-    List<String> newTags = await data.idCardsTags;
+    List<String> newTags = await data.tags;
     newTags.sort();
     if (mounted) {
       setState(() {

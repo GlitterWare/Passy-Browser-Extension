@@ -80,7 +80,7 @@ class _PaymentCardScreen extends State<PaymentCardScreen> {
   }
 
   Future<void> _load(PaymentCard paymentCard) async {
-    List<String> newTags = await data.paymentCardsTags;
+    List<String> newTags = await data.tags;
     newTags.sort();
     if (mounted) {
       setState(() {

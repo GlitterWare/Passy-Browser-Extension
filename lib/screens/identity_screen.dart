@@ -31,7 +31,7 @@ class _IdentityScreen extends State<IdentityScreen> {
   bool isLoaded = false;
 
   Future<void> _load(Identity identity) async {
-    List<String> newTags = await data.identitiesTags;
+    List<String> newTags = await data.tags;
     newTags.sort();
     if (mounted) {
       setState(() {
