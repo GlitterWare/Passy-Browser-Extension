@@ -162,7 +162,6 @@ function onFoucsin(_) {
   }
   if (el.tagName.toLowerCase() != 'input') return;
   if (!elementCheck(el)) {
-    collapse();
     return;
   }
   lastElement = el;
