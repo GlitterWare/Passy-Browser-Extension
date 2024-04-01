@@ -158,7 +158,6 @@ function onFoucsin(_) {
       lastElement = null;
       return;
     }
-    lastElement = el;
   }
   if (el.tagName.toLowerCase() != 'input') return;
   if (!elementCheck(el)) {
