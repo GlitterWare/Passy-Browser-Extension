@@ -1,7 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:otp/otp.dart';
+import 'package:base32/base32.dart';
 import 'package:passy_browser_extension/screens/common/entry_screen_args.dart';
 
 import '../common/common.dart';
@@ -46,8 +49,12 @@ class _EditPasswordScreen extends State<EditPasswordScreen> {
   Algorithm _tfaAlgorithm = Algorithm.SHA1;
   bool _tfaIsGoogle = true;
   bool _tfaIsExpanded = false;
+  TFAType _tfaType = TFAType.TOTP;
+  UniqueKey _tfaKey = UniqueKey();
   String _website = '';
   List<String> _attachments = [];
+  String _steamSharedSecret = '';
+  UniqueKey _tfaSecretFieldKey = UniqueKey();
 
   @override
   Widget build(BuildContext context) {
@@ -109,6 +116,7 @@ class _EditPasswordScreen extends State<EditPasswordScreen> {
                     interval: _tfaInterval,
                     algorithm: _tfaAlgorithm,
                     isGoogle: _tfaIsGoogle,
+                    type: _tfaType,
                   ),
             website: _website,
             attachments: _attachments,
@@ -178,7 +186,7 @@ class _EditPasswordScreen extends State<EditPasswordScreen> {
         ExpansionPanelList(
             expandedHeaderPadding: EdgeInsets.zero,
             expansionCallback: (panelIndex, isExpanded) =>
-                setState(() => _tfaIsExpanded = !isExpanded),
+                setState(() => _tfaIsExpanded = isExpanded),
             elevation: 0,
             dividerColor: PassyTheme.lightContentSecondaryColor,
             children: [
@@ -194,21 +202,76 @@ class _EditPasswordScreen extends State<EditPasswordScreen> {
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(32.0)),
                                 color: PassyTheme.darkPassyPurple),
-                            child: const PassyPadding(Row(
+                            child: PassyPadding(Row(
                               children: [
-                                Padding(
+                                const Padding(
                                   padding: EdgeInsets.only(left: 5),
                                   child: Icon(Icons.security),
                                 ),
                                 Padding(
-                                    padding: EdgeInsets.only(left: 15),
-                                    child: Text('Two-Factor Authentication')),
+                                    padding: const EdgeInsets.only(left: 15),
+                                    child: Text(
+                                        localizations.twoFactorAuthentication)),
                               ],
                             ))));
                   },
                   body: Column(
                     children: [
+                      PassyPadding(EnumDropDownButtonFormField<TFAType>(
+                        value: _tfaType,
+                        values: TFAType.values,
+                        decoration: InputDecoration(
+                            labelText:
+                                '2FA ${localizations.type.toLowerCase()}'),
+                        onChanged: (value) {
+                          if (value == null) return;
+                          if (value == _tfaType) return;
+                          setState(() {
+                            _tfaType = value;
+                            switch (value) {
+                              case TFAType.TOTP:
+                                _tfaLength = 6;
+                                _tfaInterval = 30;
+                                break;
+                              case TFAType.HOTP:
+                                _tfaLength = 6;
+                                _tfaInterval = 0;
+                                break;
+                              case TFAType.Steam:
+                                _tfaLength = 5;
+                                _tfaInterval = 30;
+                                break;
+                            }
+                            _tfaAlgorithm = Algorithm.SHA1;
+                            _tfaIsGoogle = true;
+                            _tfaKey = UniqueKey();
+                          });
+                        },
+                      )),
+                      if (_tfaType == TFAType.Steam)
+                        PassyPadding(TextFormField(
+                          initialValue: _steamSharedSecret,
+                          decoration: const InputDecoration(
+                              labelText: 'Steam shared_secret'),
+                          onChanged: (value) {
+                            String? newTfaSecret;
+                            try {
+                              newTfaSecret = base32.encode(base64Decode(value));
+                              if (newTfaSecret.length.isOdd) {
+                                newTfaSecret += '=';
+                              }
+                            } catch (_) {}
+                            setState(() {
+                              _steamSharedSecret = value;
+                              if (newTfaSecret != null) {
+                                _tfaSecret = newTfaSecret;
+                                _tfaSecretFieldKey = UniqueKey();
+                              }
+                            });
+                          },
+                        )),
                       PassyPadding(TextFormField(
+                        key: _tfaSecretFieldKey,
                         initialValue: _tfaSecret.replaceFirst('=', ''),
                         decoration: InputDecoration(
                             labelText:
@@ -227,6 +290,8 @@ class _EditPasswordScreen extends State<EditPasswordScreen> {
                         },
                       )),
                       PassyPadding(TextFormField(
+                        key: _tfaKey,
+                        enabled: _tfaType != TFAType.Steam,
                         initialValue: _tfaLength.toString(),
                         decoration: InputDecoration(
                             labelText:
@@ -238,10 +303,12 @@ class _EditPasswordScreen extends State<EditPasswordScreen> {
                             setState(() => _tfaLength = int.parse(value)),
                       )),
                       PassyPadding(TextFormField(
+                        key: _tfaKey,
+                        enabled: _tfaType != TFAType.Steam,
                         initialValue: _tfaInterval.toString(),
                         decoration: InputDecoration(
                             labelText:
-                                '2FA ${localizations.interval.toLowerCase()}'),
+                                '2FA ${_tfaType == TFAType.HOTP ? localizations.counter.toLowerCase() : localizations.interval.toLowerCase()}'),
                         inputFormatters: [
                           FilteringTextInputFormatter.digitsOnly
                         ],
@@ -249,36 +316,42 @@ class _EditPasswordScreen extends State<EditPasswordScreen> {
                             setState(() => _tfaInterval = int.parse(value)),
                       )),
                       PassyPadding(EnumDropDownButtonFormField<Algorithm>(
+                        key: _tfaKey,
                         value: _tfaAlgorithm,
                         values: Algorithm.values,
                         decoration: InputDecoration(
                             labelText:
                                 '2FA ${localizations.algorithm.toLowerCase()}'),
-                        onChanged: (value) {
-                          if (value != null) {
-                            setState(() => _tfaAlgorithm = value);
-                          }
-                        },
+                        onChanged: _tfaType == TFAType.Steam
+                            ? null
+                            : (value) {
+                                if (value != null) {
+                                  setState(() => _tfaAlgorithm = value);
+                                }
+                              },
                       )),
-                      PassyPadding(DropdownButtonFormField(
-                        items: [
-                          DropdownMenuItem(
-                            value: true,
-                            child: Text(
-                                '${localizations.true_} (${localizations.recommended.toLowerCase()})'),
-                          ),
-                          DropdownMenuItem(
-                            value: false,
-                            child: Text(localizations.false_),
-                          ),
-                        ],
-                        value: _tfaIsGoogle,
-                        decoration: InputDecoration(
-                            labelText:
-                                '2FA ${localizations.isGoogle.replaceRange(0, 1, localizations.isGoogle[0].toLowerCase())}'),
-                        onChanged: (value) =>
-                            setState(() => _tfaIsGoogle = value as bool),
-                      )),
+                      if (_tfaType != TFAType.Steam)
+                        PassyPadding(DropdownButtonFormField(
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(30)),
+                          items: [
+                            DropdownMenuItem(
+                              value: true,
+                              child: Text(
+                                  '${localizations.true_} (${localizations.recommended.toLowerCase()})'),
+                            ),
+                            DropdownMenuItem(
+                              value: false,
+                              child: Text(localizations.false_),
+                            ),
+                          ],
+                          value: _tfaIsGoogle,
+                          decoration: InputDecoration(
+                              labelText:
+                                  '2FA ${localizations.isGoogle.replaceRange(0, 1, localizations.isGoogle[0].toLowerCase())}'),
+                          onChanged: (value) =>
+                              setState(() => _tfaIsGoogle = value as bool),
+                        )),
                     ],
                   ))
             ]),

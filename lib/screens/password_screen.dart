@@ -74,16 +74,8 @@ class _PasswordScreen extends State<PasswordScreen> {
           break;
       }
       if (_tfaProgress < tfaProgressLast) {
-        setState(() {
-          _tfaCode = OTP.generateTOTPCodeString(
-            tfa.secret,
-            DateTime.now().millisecondsSinceEpoch,
-            length: tfa.length,
-            interval: tfa.interval,
-            algorithm: tfa.algorithm,
-            isGoogle: tfa.isGoogle,
-          );
-        });
+        if (!mounted) return;
+        setState(() => _tfaCode = tfa.generate());
       }
       tfaProgressLast = _tfaProgress;
       await Future.delayed(const Duration(milliseconds: 50));
@@ -176,8 +168,75 @@ class _PasswordScreen extends State<PasswordScreen> {
           ModalRoute.of(context)!.settings.arguments as EntryScreenArgs;
       password = args.entry as Password;
       isFavorite = args.isFavorite;
-      if (password!.tfa != null) generateTFA = _generateTFA(password!.tfa!);
+      if (password!.tfa != null) {
+        if (password!.tfa!.type == TFAType.HOTP) {
+          setState(() {
+            _tfaCode = password!.tfa!.generate();
+          });
+        } else {
+          generateTFA = _generateTFA(password!.tfa!);
+        }
+      }
       _load();
+    }
+
+    Widget? tfaWidget;
+    if (password!.tfa != null) {
+      if (password!.tfa!.type == TFAType.HOTP) {
+        tfaWidget = Container(
+          padding: EdgeInsets.only(right: PassyTheme.passyPadding.right),
+          child: Row(
+            children: [
+              Flexible(
+                child: PassyPadding(RecordButton(
+                  title: localizations.tfaCode,
+                  value: _tfaCode,
+                )),
+              ),
+              FloatingActionButton(
+                  heroTag: null,
+                  tooltip: localizations.refresh,
+                  onPressed: () async {
+                    Navigator.pushNamed(context, SplashScreen.routeName);
+                    password!.tfa!.interval++;
+                    await data.setPassword(password!);
+                    Map<String, PasswordMeta>? passwords =
+                        await data.getPasswordsMetadata();
+                    if (passwords == null) return;
+                    if (!context.mounted) return;
+                    Navigator.popUntil(context,
+                        (r) => r.settings.name == MainScreen.routeName);
+                    Navigator.pushNamed(context, PasswordsScreen.routeName,
+                        arguments: passwords);
+                    Navigator.pushNamed(context, PasswordScreen.routeName,
+                        arguments: EntryScreenArgs(
+                            entry: password!, isFavorite: isFavorite));
+                  },
+                  child: const Icon(Icons.refresh_rounded)),
+            ],
+          ),
+        );
+      } else {
+        tfaWidget = Row(
+          children: [
+            SizedBox(
+              width: PassyTheme.passyPadding.left * 2,
+            ),
+            SizedBox(
+              child: CircularProgressIndicator(
+                value: _tfaProgress,
+                color: _tfaColor,
+              ),
+            ),
+            Flexible(
+              child: PassyPadding(RecordButton(
+                title: localizations.tfaCode,
+                value: _tfaCode,
+              )),
+            ),
+          ],
+        );
+      }
     }
 
     return Scaffold(
@@ -339,26 +398,7 @@ class _PasswordScreen extends State<PasswordScreen> {
               obscureValue: true,
               isPassword: true,
             )),
-          if (password!.tfa != null)
-            Row(
-              children: [
-                SizedBox(
-                  width: PassyTheme.passyPadding.left * 2,
-                ),
-                SizedBox(
-                  child: CircularProgressIndicator(
-                    value: _tfaProgress,
-                    color: _tfaColor,
-                  ),
-                ),
-                Flexible(
-                  child: PassyPadding(RecordButton(
-                    title: localizations.tfaCode,
-                    value: _tfaCode,
-                  )),
-                ),
-              ],
-            ),
+          if (tfaWidget != null) tfaWidget,
           if (password!.website != '')
             Row(
               children: [
