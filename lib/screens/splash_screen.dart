@@ -49,7 +49,7 @@ class _SplashScreen extends State<SplashScreen> {
         return;
       }
       data = extensionData;
-      if (mounted) Navigator.pushNamed(context, LoginScreen.routeName);
+      if (context.mounted) Navigator.pushNamed(context, LoginScreen.routeName);
     }
 
     if (!_isloaded) {
@@ -58,6 +58,7 @@ class _SplashScreen extends State<SplashScreen> {
       load();
     }
     return Scaffold(
+      floatingActionButton: const WebEmojiLoaderHack(),
       appBar: const BrowserExtensionAppbar(),
       body: Center(
         child: logo60Purple,
