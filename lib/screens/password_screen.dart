@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:material_symbols_icons/symbols.dart';
-import 'package:otp/otp.dart';
 import 'package:passy_browser_extension/screens/common/entry_screen_args.dart';
 
 import 'package:url_launcher/url_launcher_string.dart';
