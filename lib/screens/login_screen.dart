@@ -21,6 +21,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreen extends State<LoginScreen> {
   final TextEditingController _passwordController =
       TextEditingController(text: '');
+  final FocusNode _passwordFocus = FocusNode();
   Widget? _floatingActionButton;
   String _password = '';
   String _username = data.lastUsername;
@@ -66,6 +67,7 @@ class _LoginScreen extends State<LoginScreen> {
   @override
   void initState() {
     super.initState();
+    _passwordFocus.requestFocus();
     onUsernamesEmpty();
     if (data.isLoggedIn) {
       if (data.isEmbed) {
@@ -80,6 +82,7 @@ class _LoginScreen extends State<LoginScreen> {
   @override
   void dispose() {
     _passwordController.dispose();
+    _passwordFocus.dispose();
     super.dispose();
   }
 
@@ -133,6 +136,7 @@ class _LoginScreen extends State<LoginScreen> {
                                 },
                                 onChanged: (a) {
                                   setState(() => _username = a!);
+                                  _passwordFocus.requestFocus();
                                 },
                               ),
                             ),
@@ -144,6 +148,7 @@ class _LoginScreen extends State<LoginScreen> {
                             Expanded(
                               child: TextField(
                                 controller: _passwordController,
+                                focusNode: _passwordFocus,
                                 obscureText: true,
                                 onSubmitted: (value) => login(),
                                 onChanged: (a) => setState(() => _password = a),
@@ -153,7 +158,6 @@ class _LoginScreen extends State<LoginScreen> {
                                 inputFormatters: [
                                   LengthLimitingTextInputFormatter(32),
                                 ],
-                                autofocus: true,
                               ),
                             ),
                             FloatingActionButton(
