@@ -57,6 +57,12 @@ class _EditPasswordScreen extends State<EditPasswordScreen> {
   UniqueKey _tfaSecretFieldKey = UniqueKey();
 
   @override
+  void dispose() {
+    _passwordController.dispose();
+      super.dispose();
+    }
+
+  @override
   Widget build(BuildContext context) {
     if (!_isLoaded) {
       Object? args = ModalRoute.of(context)!.settings.arguments;

@@ -119,6 +119,13 @@ class _SearchScreen extends State<SearchScreen> {
   }
 
   @override
+  void dispose() {
+    queryFocus.dispose();
+    queryController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     SearchScreenArgs args =
         ModalRoute.of(context)!.settings.arguments as SearchScreenArgs;
