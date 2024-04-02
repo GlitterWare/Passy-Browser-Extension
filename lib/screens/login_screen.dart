@@ -1,18 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:material_symbols_icons/symbols.dart';
-import 'package:passy_browser_extension/common/js_interop.dart';
 import 'package:passy_browser_extension/passy_browser_extension_flutter/passy_browser_extensions_flutter.dart';
-import 'package:passy_browser_extension/passy_data/entry_type.dart';
-import 'package:passy_browser_extension/passy_data/passy_search.dart';
 
 import '../common/assets.dart';
 import '../common/common.dart';
-import '../passy_data/password.dart';
 import '../passy_flutter/common/common.dart';
 import '../passy_flutter/passy_flutter.dart';
+import 'common/common.dart';
 import 'main_screen.dart';
-import 'search_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -29,51 +24,6 @@ class _LoginScreen extends State<LoginScreen> {
   Widget? _floatingActionButton;
   String _password = '';
   String _username = data.lastUsername;
-
-  Widget _buildPasswords(Iterable<PasswordMeta> passwords, String terms,
-      List<String> tags, void Function() rebuild) {
-    List<PasswordMeta> found =
-        PassySearch.searchPasswords(passwords: passwords, terms: terms, tags: tags);
-    return PasswordButtonListView(
-      passwords: found,
-      onPressed: (passwordMeta) async {
-        Password? password = await data.getPassword(passwordMeta.key);
-        if (password == null) {
-          if (mounted) {
-            showSnackBar(
-              message: localizations.failedToLoad,
-              icon: const Icon(Symbols.password_rounded,
-                  weight: 700, color: PassyTheme.darkContentColor),
-            );
-          }
-          return;
-        }
-        JsInterop.autofillPassword(
-          password.username.isNotEmpty ? password.username : password.email,
-          password.email.isNotEmpty ? password.email : password.username,
-          password.password,
-        );
-        JsInterop.unloadEmbed();
-      },
-      shouldSort: true,
-    );
-  }
-
-  Future<void> _launchAutofill() async {
-    Iterable<PasswordMeta> passwords =
-        (await data.getPasswordsMetadata())?.values ?? {};
-    if (mounted) {
-      Navigator.pushReplacementNamed(
-        context,
-        SearchScreen.routeName,
-        arguments: SearchScreenArgs(
-          entryType: EntryType.password,
-          builder: (terms, tags, rebuild) =>
-              _buildPasswords(passwords, terms, tags, rebuild),
-        ),
-      );
-    }
-  }
 
   void login() async {
     String password = _password;
@@ -94,7 +44,8 @@ class _LoginScreen extends State<LoginScreen> {
     }
     await data.login(_username, password);
     if (data.isEmbed) {
-      await _launchAutofill();
+      if (!mounted) return;
+      await launchAutofill(context);
       return;
     }
     if (mounted) {
@@ -118,7 +69,8 @@ class _LoginScreen extends State<LoginScreen> {
     onUsernamesEmpty();
     if (data.isLoggedIn) {
       if (data.isEmbed) {
-        _launchAutofill();
+        if (!mounted) return;
+        launchAutofill(context);
       } else {
         Navigator.pushReplacementNamed(context, MainScreen.routeName);
       }

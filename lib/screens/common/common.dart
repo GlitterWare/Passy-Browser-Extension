@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:material_symbols_icons/symbols.dart';
+import 'package:passy_browser_extension/common/js_interop.dart';
+import 'package:passy_browser_extension/passy_data/passy_search.dart';
 import 'package:passy_browser_extension/passy_flutter/passy_flutter.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
@@ -23,6 +25,7 @@ import '../password_screen.dart';
 import '../passwords_screen.dart';
 import '../payment_card_screen.dart';
 import '../payment_cards_screen.dart';
+import '../search_screen.dart';
 
 void logOut(State state) {
   showDialog(
@@ -382,4 +385,47 @@ String entryTypeToEntryScreenName(EntryType type) {
 }
 
 RegExp _emojiRegexp = RegExp(r'\p{So}', unicode: true);
-int tagSort(String a, String b) => a.replaceAll(_emojiRegexp, '').compareTo(b.replaceAll(_emojiRegexp, ''));
+int tagSort(String a, String b) =>
+    a.replaceAll(_emojiRegexp, '').compareTo(b.replaceAll(_emojiRegexp, ''));
+
+Widget buildAutofillPasswords(Iterable<PasswordMeta> passwords, String terms,
+    List<String> tags, void Function() rebuild) {
+  List<PasswordMeta> found = PassySearch.searchPasswords(
+      passwords: passwords, terms: terms, tags: tags);
+  return PasswordButtonListView(
+    passwords: found,
+    onPressed: (passwordMeta) async {
+      Password? password = await data.getPassword(passwordMeta.key);
+      if (password == null) {
+        showSnackBar(
+          message: localizations.failedToLoad,
+          icon: const Icon(Symbols.password_rounded,
+              weight: 700, color: PassyTheme.darkContentColor),
+        );
+        return;
+      }
+      JsInterop.autofillPassword(
+        password.username.isNotEmpty ? password.username : password.email,
+        password.email.isNotEmpty ? password.email : password.username,
+        password.password,
+      );
+      JsInterop.unloadEmbed();
+    },
+    shouldSort: true,
+  );
+}
+
+Future<void> launchAutofill(BuildContext context) async {
+  Iterable<PasswordMeta> passwords =
+      (await data.getPasswordsMetadata())?.values ?? {};
+  if (!context.mounted) return;
+    Navigator.pushReplacementNamed(
+      context,
+      SearchScreen.routeName,
+      arguments: SearchScreenArgs(
+        entryType: EntryType.password,
+        builder: (terms, tags, rebuild) =>
+            buildAutofillPasswords(passwords, terms, tags, rebuild),
+      ),
+    );
+}

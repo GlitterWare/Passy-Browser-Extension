@@ -62,49 +62,54 @@ class _SplashScreen extends State<SplashScreen> {
       }
       data = extensionData;
       if (data.isLoggedIn) {
-      CurrentEntry? currentEntry = data.currentEntry;
-      if (currentEntry != null) {
-        dynamic entries = (await data.getEntriesMetadata(currentEntry.type))
-                ?.values
-                .toList() ??
-            <EntryMeta>[];
-        switch (currentEntry.type) {
-          case EntryType.password:
-            entries = List<PasswordMeta>.from(entries);
-            break;
-          case EntryType.paymentCard:
-            entries = List<PaymentCardMeta>.from(entries);
-            break;
-          case EntryType.note:
-            entries = List<NoteMeta>.from(entries);
-            break;
-          case EntryType.idCard:
-            entries = List<IDCardMeta>.from(entries);
-            break;
-          case EntryType.identity:
-            entries = List<IdentityMeta>.from(entries);
-            break;
-        }
-        PassyEntry? entry =
-            await data.getEntry(currentEntry.type, key: currentEntry.key);
-        bool isFavorite = (await data
-                    .getFavoriteEntries(currentEntry.type))?[currentEntry.key]
-                ?.status ==
-            EntryStatus.alive;
-        if (entry == null) {
-          data.setCurrentEntry(null);
+        if (data.isEmbed) {
+          if (!context.mounted) return;
+          launchAutofill(context);
           return;
         }
-        if (!context.mounted) return;
-        Navigator.pushNamed(context, MainScreen.routeName);
-        Navigator.pushNamed(
-            context, entryTypeToEntriesScreenName(currentEntry.type),
-            arguments: entries);
-        Navigator.pushNamed(
-            context, entryTypeToEntryScreenName(currentEntry.type),
-            arguments: EntryScreenArgs(entry: entry, isFavorite: isFavorite));
-        return;
-      }
+        CurrentEntry? currentEntry = data.currentEntry;
+        if (currentEntry != null) {
+          dynamic entries = (await data.getEntriesMetadata(currentEntry.type))
+                  ?.values
+                  .toList() ??
+              <EntryMeta>[];
+          switch (currentEntry.type) {
+            case EntryType.password:
+              entries = List<PasswordMeta>.from(entries);
+              break;
+            case EntryType.paymentCard:
+              entries = List<PaymentCardMeta>.from(entries);
+              break;
+            case EntryType.note:
+              entries = List<NoteMeta>.from(entries);
+              break;
+            case EntryType.idCard:
+              entries = List<IDCardMeta>.from(entries);
+              break;
+            case EntryType.identity:
+              entries = List<IdentityMeta>.from(entries);
+              break;
+          }
+          PassyEntry? entry =
+              await data.getEntry(currentEntry.type, key: currentEntry.key);
+          bool isFavorite = (await data
+                      .getFavoriteEntries(currentEntry.type))?[currentEntry.key]
+                  ?.status ==
+              EntryStatus.alive;
+          if (entry == null) {
+            data.setCurrentEntry(null);
+            return;
+          }
+          if (!context.mounted) return;
+          Navigator.pushNamed(context, MainScreen.routeName);
+          Navigator.pushNamed(
+              context, entryTypeToEntriesScreenName(currentEntry.type),
+              arguments: entries);
+          Navigator.pushNamed(
+              context, entryTypeToEntryScreenName(currentEntry.type),
+              arguments: EntryScreenArgs(entry: entry, isFavorite: isFavorite));
+          return;
+        }
       }
       if (context.mounted) Navigator.pushNamed(context, LoginScreen.routeName);
     }
