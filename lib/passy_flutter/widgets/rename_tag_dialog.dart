@@ -1,8 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:passy_browser_extension/common/common.dart';
-import 'package:passy_browser_extension/passy_flutter/common/common.dart';
 import '../passy_flutter.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart' as ep;
 
@@ -21,6 +19,7 @@ class RenameTagDialog extends StatefulWidget {
 class _RenameTagDialog extends State<RenameTagDialog> {
   String _tag = '';
   final TextEditingController _controller = TextEditingController();
+  final FocusNode _focusNode = FocusNode();
 
   @override
   void initState() {
@@ -30,6 +29,13 @@ class _RenameTagDialog extends State<RenameTagDialog> {
     _controller.addListener(
       () => setState(() => _tag = _controller.text),
     );
+    _focusNode.requestFocus();
+    _focusNode.addListener(() async {
+      if (!_focusNode.hasFocus) return;
+      await Future.delayed(const Duration(milliseconds: 50));
+      _controller.selection =
+          TextSelection.collapsed(offset: _controller.text.length);
+    });
   }
 
   @override
@@ -37,6 +43,7 @@ class _RenameTagDialog extends State<RenameTagDialog> {
     // Clean up the controller when the widget is removed from the
     // widget tree.
     _controller.dispose();
+    _focusNode.dispose();
     super.dispose();
   }
 
@@ -59,7 +66,7 @@ class _RenameTagDialog extends State<RenameTagDialog> {
             PassyPadding(
               TextFormField(
                 controller: _controller,
-                autofocus: true,
+                focusNode: _focusNode,
                 decoration: InputDecoration(labelText: localizations.tag),
                 onFieldSubmitted: (tag) {
                   Navigator.pop(context, tag);
@@ -100,7 +107,8 @@ class _RenameTagDialog extends State<RenameTagDialog> {
                 ),
                 child: ep.EmojiPicker(
                   textEditingController: _controller,
-                  onEmojiSelected: (ep.Category? category, ep.Emoji emoji) {},
+                  onEmojiSelected: (ep.Category? category, ep.Emoji emoji) =>
+                      _focusNode.requestFocus(),
                   config: ep.Config(
                     height: 256,
                     checkPlatformCompatibility: true,
