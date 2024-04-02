@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:passy_browser_extension/passy_browser_extension_flutter/widgets/browser_extension_appbar.dart';
 import '../common/common.dart';
 import '../passy_data/entry_type.dart';
