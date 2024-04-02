@@ -128,7 +128,7 @@ class _IDCardsScreen extends State<IDCardsScreen> {
     } catch (_) {
       return;
     }
-    newTags.sort();
+    newTags.sort(tagSort);
     if (listEquals(newTags, _tags)) {
       return;
     }

@@ -99,7 +99,7 @@ class _SearchScreen extends State<SearchScreen> {
           newTags = await data.tags;
           break;
       }
-      newTags.sort();
+      newTags.sort(tagSort);
     } catch (_) {
       return;
     }
@@ -177,7 +177,7 @@ class _SearchScreen extends State<SearchScreen> {
                           b = b.toLowerCase();
                           int aMatches = lowerS.allMatches(a).length;
                           int bMatches = lowerS.allMatches(b).length;
-                          if (aMatches == bMatches) return a.compareTo(b);
+                          if (aMatches == bMatches) return tagSort(a, b);
                           return bMatches - aMatches;
                         },
                       );
@@ -209,7 +209,7 @@ class _SearchScreen extends State<SearchScreen> {
                           queryController.text = '';
                         }
                         selected.add(tag);
-                        selected.sort();
+                        selected.sort(tagSort);
                         notSelected.remove(tag);
                         _widget =
                             _builder(queryController.text, selected, rebuild);
@@ -218,7 +218,7 @@ class _SearchScreen extends State<SearchScreen> {
                         queryFocus.requestFocus();
                         selected.remove(tag);
                         notSelected.add(tag);
-                        notSelected.sort();
+                        notSelected.sort(tagSort);
                         _widget =
                             _builder(queryController.text, selected, rebuild);
                       }),

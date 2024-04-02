@@ -123,7 +123,7 @@ class _NotesScreen extends State<NotesScreen> {
     } catch (_) {
       return;
     }
-    newTags.sort();
+    newTags.sort(tagSort);
     if (listEquals(newTags, _tags)) {
       return;
     }

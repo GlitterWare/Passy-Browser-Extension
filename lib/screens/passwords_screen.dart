@@ -99,7 +99,7 @@ class _PasswordsScreen extends State<PasswordsScreen> {
     } catch (_) {
       return;
     }
-    newTags.sort();
+    newTags.sort(tagSort);
     if (listEquals(newTags, _tags)) {
       return;
     }

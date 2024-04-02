@@ -131,7 +131,7 @@ class _IdentitiesScreen extends State<IdentitiesScreen> {
     } catch (_) {
       return;
     }
-    newTags.sort();
+    newTags.sort(tagSort);
     if (listEquals(newTags, _tags)) {
       return;
     }

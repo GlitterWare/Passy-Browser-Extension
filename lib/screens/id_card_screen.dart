@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:material_symbols_icons/symbols.dart';
+import 'package:passy_browser_extension/screens/common/common.dart';
 import 'package:passy_browser_extension/screens/common/entry_screen_args.dart';
 
 import '../common/common.dart';
@@ -31,12 +32,12 @@ class _IDCardScreen extends State<IDCardScreen> {
 
   Future<void> _load(IDCard idCard) async {
     List<String> newTags = await data.tags;
-    newTags.sort();
+    newTags.sort(tagSort);
     if (mounted) {
       setState(() {
         _tags = newTags;
         _selected = idCard.tags.toList();
-        _selected.sort();
+        _selected.sort(tagSort);
         for (String tag in _selected) {
           if (_tags.contains(tag)) {
             _tags.remove(tag);

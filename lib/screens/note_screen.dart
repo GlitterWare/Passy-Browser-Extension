@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:markdown/markdown.dart' as md;
+import 'package:passy_browser_extension/screens/common/common.dart';
 
 import '../common/common.dart';
 import '../passy_data/entry_type.dart';
@@ -82,12 +83,12 @@ class _NoteScreen extends State<NoteScreen> {
 
   Future<void> _load(Note note) async {
     List<String> newTags = await data.tags;
-    newTags.sort();
+    newTags.sort(tagSort);
     if (mounted) {
       setState(() {
         _tags = newTags;
         _selected = note.tags.toList();
-        _selected.sort();
+        _selected.sort(tagSort);
         for (String tag in _selected) {
           if (_tags.contains(tag)) {
             _tags.remove(tag);

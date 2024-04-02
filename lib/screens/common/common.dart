@@ -380,3 +380,6 @@ String entryTypeToEntryScreenName(EntryType type) {
       return IdentityScreen.routeName;
   }
 }
+
+RegExp _emojiRegexp = RegExp(r'\p{So}', unicode: true);
+int tagSort(String a, String b) => a.replaceAll(_emojiRegexp, '').compareTo(b.replaceAll(_emojiRegexp, ''));

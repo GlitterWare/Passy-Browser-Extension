@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:material_symbols_icons/symbols.dart';
+import 'package:passy_browser_extension/screens/common/common.dart';
 import 'package:passy_browser_extension/screens/common/entry_screen_args.dart';
 
 import 'package:url_launcher/url_launcher_string.dart';
@@ -144,12 +145,12 @@ class _PasswordScreen extends State<PasswordScreen> {
 
   Future<void> _load() async {
     List<String> newTags = await data.tags;
-    newTags.sort();
+    newTags.sort(tagSort);
     if (mounted) {
       setState(() {
         _tags = newTags;
         _selected = password!.tags.toList();
-        _selected.sort();
+        _selected.sort(tagSort);
         for (String tag in _selected) {
           if (_tags.contains(tag)) {
             _tags.remove(tag);
