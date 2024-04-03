@@ -22,7 +22,9 @@ class PasswordMeta extends EntryMeta {
       : super(key);
 
   PasswordMeta.fromJson(Map<String, dynamic> json)
-      : tags = json['tags'],
+      : tags = json.containsKey('tags')
+            ? json['tags'].map<String>((e) => e.toString()).toList()
+            : const [],
         nickname = json['nickname'] ?? '',
         username = json['username'] ?? '',
         website = json['website'] ?? '',
@@ -83,7 +85,9 @@ class Password extends PassyEntry<Password> {
                 .toList() ??
             [],
         additionalInfo = json['additionalInfo'] as String,
-        tags = (json['tags'] as List?)?.map((e) => e as String).toList() ?? [],
+        tags =
+            (json['tags'] as List?)?.map<String>((e) => e as String).toList() ??
+                [],
         nickname = json['nickname'] ?? '',
         iconName = json['iconName'] ?? '',
         username = json['username'] ?? '',
@@ -94,7 +98,7 @@ class Password extends PassyEntry<Password> {
         attachments = json['attachments'] == null
             ? []
             : (json['attachments'] as List<dynamic>)
-                .map((e) => e.toString())
+                .map<String>((e) => e.toString())
                 .toList(),
         super(json['key'] ?? DateTime.now().toUtc().toIso8601String());
 
@@ -104,7 +108,8 @@ class Password extends PassyEntry<Password> {
                 .toList() ??
             [],
         additionalInfo = csv[2] as String,
-        tags = (csv[3] as List?)?.map((e) => e as String).toList() ?? [],
+        tags =
+            (csv[3] as List?)?.map<String>((e) => e as String).toList() ?? [],
         nickname = csv[4] ?? '',
         iconName = csv[5] ?? '',
         username = csv[6] ?? '',
@@ -113,7 +118,7 @@ class Password extends PassyEntry<Password> {
         tfa = csv[9].isNotEmpty ? TFA.fromCSV(csv[9]) : null,
         website = csv[10] ?? '',
         attachments =
-            (csv[11] as List<dynamic>).map((e) => e.toString()).toList(),
+            (csv[11] as List<dynamic>).map<String>((e) => e.toString()).toList(),
         super(csv[0] ?? DateTime.now().toUtc().toIso8601String());
 
   factory Password.fromCSV(List csv) {

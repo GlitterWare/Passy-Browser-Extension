@@ -22,7 +22,9 @@ class PaymentCardMeta extends EntryMeta {
   }) : super(key);
 
   PaymentCardMeta.fromJson(Map<String, dynamic> json)
-      : tags = json['tags'],
+      : tags = json.containsKey('tags')
+            ? json['tags'].map<String>((e) => e.toString()).toList()
+            : const [],
         nickname = json['nickname'] ?? '',
         cardNumber = json['cardNumber'] ?? '',
         cardholderName = json['cardholderName'] ?? '',
@@ -90,7 +92,7 @@ class PaymentCard extends PassyEntry<PaymentCard> {
                 .toList() ??
             [],
         additionalInfo = json['additionalInfo'] ?? '',
-        tags = (json['tags'] as List?)?.map((e) => e as String).toList() ?? [],
+        tags = (json['tags'] as List?)?.map<String>((e) => e as String).toList() ?? [],
         nickname = json['nickname'] ?? '',
         cardNumber = json['cardNumber'] ?? '',
         cardholderName = json['cardholderName'] ?? '',
@@ -99,7 +101,7 @@ class PaymentCard extends PassyEntry<PaymentCard> {
         attachments = json['attachments'] == null
             ? []
             : (json['attachments'] as List<dynamic>)
-                .map((e) => e.toString())
+                .map<String>((e) => e.toString())
                 .toList(),
         super(json['key'] ?? DateTime.now().toUtc().toIso8601String());
 
@@ -108,14 +110,15 @@ class PaymentCard extends PassyEntry<PaymentCard> {
             (csv[1] as List?)?.map((e) => CustomField.fromCSV(e)).toList() ??
                 [],
         additionalInfo = csv[2] ?? '',
-        tags = (csv[3] as List?)?.map((e) => e as String).toList() ?? [],
+        tags =
+            (csv[3] as List?)?.map<String>((e) => e as String).toList() ?? [],
         nickname = csv[4] ?? '',
         cardNumber = csv[5] ?? '',
         cardholderName = csv[6] ?? '',
         cvv = csv[7] ?? '',
         exp = csv[8] ?? '',
         attachments =
-            (csv[9] as List<dynamic>).map((e) => e.toString()).toList(),
+            (csv[9] as List<dynamic>).map<String>((e) => e.toString()).toList(),
         super(csv[0] ?? DateTime.now().toUtc().toIso8601String());
 
   factory PaymentCard.fromCSV(List csv) {

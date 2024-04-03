@@ -19,7 +19,7 @@ class NoteMeta extends EntryMeta {
   NoteMeta.fromJson(Map<String, dynamic> json)
       : title = json['title'],
         tags = json.containsKey('tags')
-            ? (json['tags'] as List<dynamic>).map((e) => e.toString()).toList()
+            ? (json['tags'] as List<dynamic>).map<String>((e) => e.toString()).toList()
             : const [],
         super(json['key'] ?? '');
 
@@ -63,20 +63,23 @@ class Note extends PassyEntry<Note> {
         attachments = json['attachments'] == null
             ? []
             : (json['attachments'] as List<dynamic>)
-                .map((e) => e.toString())
+                .map<String>((e) => e.toString())
                 .toList(),
         tags = json['tags'] == null
             ? []
-            : (json['tags'] as List<dynamic>).map((e) => e.toString()).toList(),
+            : (json['tags'] as List<dynamic>)
+                .map<String>((e) => e.toString())
+                .toList(),
         super(json['key'] ?? DateTime.now().toUtc().toIso8601String());
 
   Note._fromCSV(List csv)
       : title = csv[1] ?? '',
         note = csv[2] ?? '',
         isMarkdown = boolFromString(csv[3] ?? 'false') ?? false,
-        tags = (csv[4] as List<dynamic>).map((e) => e.toString()).toList(),
+        tags =
+            (csv[4] as List<dynamic>).map<String>((e) => e.toString()).toList(),
         attachments =
-            (csv[5] as List<dynamic>).map((e) => e.toString()).toList(),
+            (csv[5] as List<dynamic>).map<String>((e) => e.toString()).toList(),
         super(csv[0] ?? DateTime.now().toUtc().toIso8601String());
 
   factory Note.fromCSV(List csv) {

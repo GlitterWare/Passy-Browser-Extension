@@ -52,7 +52,9 @@ class IdentityMeta extends EntryMeta {
       : super(key);
 
   IdentityMeta.fromJson(Map<String, dynamic> json)
-      : tags = json['tags'],
+      : tags = json.containsKey('tags')
+            ? json['tags'].map<String>((e) => e.toString()).toList()
+            : const [],
         nickname = json['nickname'] ?? '',
         firstAddressLine = json['firstAddressLine'] ?? '',
         super(json['key'] ?? '');
@@ -122,7 +124,7 @@ class Identity extends PassyEntry<Identity> {
                 .toList() ??
             [],
         additionalInfo = json['additionalInfo'] ?? '',
-        tags = (json['tags'] as List?)?.map((e) => e as String).toList() ?? [],
+        tags = (json['tags'] as List?)?.map<String>((e) => e as String).toList() ?? [],
         nickname = json['nickname'] ?? '',
         title = titleFromName(json['title']) ?? Title.mx,
         firstName = json['firstName'] ?? '',
@@ -139,7 +141,7 @@ class Identity extends PassyEntry<Identity> {
         attachments = json['attachments'] == null
             ? []
             : (json['attachments'] as List<dynamic>)
-                .map((e) => e.toString())
+                .map<String>((e) => e.toString())
                 .toList(),
         super(json['key'] ?? DateTime.now().toUtc().toIso8601String());
 
@@ -148,7 +150,7 @@ class Identity extends PassyEntry<Identity> {
             (csv[1] as List?)?.map((e) => CustomField.fromCSV(e)).toList() ??
                 [],
         additionalInfo = csv[2] ?? '',
-        tags = (csv[3] as List?)?.map((e) => e as String).toList() ?? [],
+        tags = (csv[3] as List?)?.map<String>((e) => e as String).toList() ?? [],
         nickname = csv[4] ?? '',
         title = titleFromName(csv[5]) ?? Title.mx,
         firstName = csv[6] ?? '',
@@ -163,7 +165,7 @@ class Identity extends PassyEntry<Identity> {
         city = csv[15] ?? '',
         country = csv[16] ?? '',
         attachments =
-            (csv[17] as List<dynamic>).map((e) => e.toString()).toList(),
+            (csv[17] as List<dynamic>).map<String>((e) => e.toString()).toList(),
         super(csv[0] ?? DateTime.now().toUtc().toIso8601String());
 
   factory Identity.fromCSV(List csv) {

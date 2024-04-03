@@ -18,7 +18,9 @@ class IDCardMeta extends EntryMeta {
       : super(key);
 
   IDCardMeta.fromJson(Map<String, dynamic> json)
-      : tags = json['tags'],
+      : tags = json.containsKey('tags')
+            ? json['tags'].map<String>((e) => e.toString()).toList()
+            : const [],
         nickname = json['nickname'] ?? '',
         name = json['name'] ?? '',
         super(json['key'] ?? '');
@@ -76,10 +78,12 @@ class IDCard extends PassyEntry<IDCard> {
                 .toList() ??
             [],
         additionalInfo = json['additionalInfo'] ?? '',
-        tags = (json['tags'] as List?)?.map((e) => e as String).toList() ?? [],
+        tags =
+            (json['tags'] as List?)?.map<String>((e) => e as String).toList() ??
+                [],
         nickname = json['nickname'] ?? '',
         pictures = (json['pictures'] as List<dynamic>?)
-                ?.map((e) => e as String)
+                ?.map<String>((e) => e as String)
                 .toList() ??
             [],
         type = json['type'] ?? '',
@@ -91,7 +95,7 @@ class IDCard extends PassyEntry<IDCard> {
         attachments = json['attachments'] == null
             ? []
             : (json['attachments'] as List<dynamic>)
-                .map((e) => e.toString())
+                .map<String>((e) => e.toString())
                 .toList(),
         super(json['key'] ?? DateTime.now().toUtc().toIso8601String());
 
@@ -100,10 +104,13 @@ class IDCard extends PassyEntry<IDCard> {
             (csv[1] as List?)?.map((e) => CustomField.fromCSV(e)).toList() ??
                 [],
         additionalInfo = csv[2] ?? '',
-        tags =
-            (csv[3] as List<dynamic>?)?.map((e) => e as String).toList() ?? [],
+        tags = (csv[3] as List<dynamic>?)
+                ?.map<String>((e) => e as String)
+                .toList() ??
+            [],
         nickname = csv[4] ?? '',
-        pictures = (csv[5] as List?)?.map((e) => e as String).toList() ?? [],
+        pictures =
+            (csv[5] as List?)?.map<String>((e) => e as String).toList() ?? [],
         type = csv[6] ?? '',
         idNumber = csv[7] ?? '',
         name = csv[8] ?? '',
@@ -111,7 +118,7 @@ class IDCard extends PassyEntry<IDCard> {
         expDate = csv[10] ?? '',
         country = csv[11] ?? '',
         attachments =
-            (csv[12] as List<dynamic>).map((e) => e.toString()).toList(),
+            (csv[12] as List<dynamic>).map<String>((e) => e.toString()).toList(),
         super(csv[0] ?? DateTime.now().toUtc().toIso8601String());
 
   factory IDCard.fromCSV(List csv) {
