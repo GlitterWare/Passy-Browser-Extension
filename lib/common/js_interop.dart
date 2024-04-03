@@ -136,6 +136,8 @@ abstract class JsInterop {
     return interop.setCurrentEntry(jsonEncode(entry?.toJson())).toDart;
   }
 
+  static void createTab(String url) => interop.createTab(url);
+
   static Future<bool> verify(String username, String password) async {
     dynamic response =
         await runCommand(['accounts', 'verify', username, password]);

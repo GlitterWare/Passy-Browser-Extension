@@ -76,6 +76,10 @@ function setCurrentEntry(currentEntry) {
   return browser.storage.local.set({ 'currentEntry': currentEntry })
 }
 
+function createTab(url) {
+  browser.tabs.create({url: url});
+}
+
 window.addEventListener('load', function (ev) {
   // Download main.dart.js
   _flutter.loader.loadEntrypoint({

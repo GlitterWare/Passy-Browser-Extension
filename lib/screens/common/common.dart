@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:passy_browser_extension/common/js_interop.dart';
+import 'package:passy_browser_extension/common/raw_interop.dart';
 import 'package:passy_browser_extension/passy_data/passy_search.dart';
 import 'package:passy_browser_extension/passy_flutter/passy_flutter.dart';
-import 'package:url_launcher/url_launcher_string.dart';
 
 import '../../common/common.dart';
 import '../../passy_data/entry_type.dart';
@@ -251,7 +251,7 @@ List<PopupMenuEntry> passwordPopupMenuBuilder(
             url = 'http://$url';
           }
           try {
-            launchUrlString(url);
+            createTab(url);
           } catch (_) {}
         },
       ),
@@ -419,13 +419,13 @@ Future<void> launchAutofill(BuildContext context) async {
   Iterable<PasswordMeta> passwords =
       (await data.getPasswordsMetadata())?.values ?? {};
   if (!context.mounted) return;
-    Navigator.pushReplacementNamed(
-      context,
-      SearchScreen.routeName,
-      arguments: SearchScreenArgs(
-        entryType: EntryType.password,
-        builder: (terms, tags, rebuild) =>
-            buildAutofillPasswords(passwords, terms, tags, rebuild),
-      ),
-    );
+  Navigator.pushReplacementNamed(
+    context,
+    SearchScreen.routeName,
+    arguments: SearchScreenArgs(
+      entryType: EntryType.password,
+      builder: (terms, tags, rebuild) =>
+          buildAutofillPasswords(passwords, terms, tags, rebuild),
+    ),
+  );
 }

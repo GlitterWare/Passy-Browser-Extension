@@ -2,10 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:material_symbols_icons/symbols.dart';
+import 'package:passy_browser_extension/common/raw_interop.dart';
 import 'package:passy_browser_extension/screens/common/common.dart';
 import 'package:passy_browser_extension/screens/common/entry_screen_args.dart';
-
-import 'package:url_launcher/url_launcher_string.dart';
 
 import '../common/common.dart';
 import '../passy_data/custom_field.dart';
@@ -427,7 +426,7 @@ class _PasswordScreen extends State<PasswordScreen> {
                           url = 'http://$url';
                         }
                         try {
-                          launchUrlString(url);
+                          createTab(url);
                         } catch (_) {}
                       },
                       child: const Icon(Symbols.open_in_browser_rounded,

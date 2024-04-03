@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher_string.dart';
+import 'package:passy_browser_extension/common/raw_interop.dart';
 import 'package:websafe_svg/websafe_svg.dart';
 
 import '../../common/assets.dart';
@@ -68,7 +68,7 @@ class PassyAboutDialog extends StatelessWidget {
             ),
             center: const Text('GitHub'),
             right: const Icon(Icons.arrow_forward_ios_rounded),
-            onPressed: () => launchUrlString(
+            onPressed: () => createTab(
               'https://github.com/GlitterWare/Passy-Browser-Extension',
             ),
           )),

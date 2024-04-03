@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:material_symbols_icons/material_symbols_icons.dart';
 import 'package:material_symbols_icons/symbols.dart';
+import 'package:passy_browser_extension/common/raw_interop.dart';
 import 'package:passy_browser_extension/passy_flutter/passy_flutter.dart';
-import 'package:url_launcher/url_launcher_string.dart';
 import 'package:websafe_svg/websafe_svg.dart';
 import '../common/common.dart';
 import 'main_screen.dart';
@@ -42,7 +41,7 @@ class _SettingsScreen extends State<SettingsScreen> {
                     child: Icon(Icons.money_rounded),
                   ),
                   right: const Icon(Icons.arrow_forward_ios_rounded),
-                  onPressed: () => launchUrlString(
+                  onPressed: () => createTab(
                       'https://github.com/sponsors/GlitterWare'),
                 )),
                 PassyPadding(ThreeWidgetButton(
@@ -57,7 +56,7 @@ class _SettingsScreen extends State<SettingsScreen> {
                   ),
                   center: Text(localizations.requestAFeature),
                   right: const Icon(Icons.arrow_forward_ios_rounded),
-                  onPressed: () => launchUrlString(
+                  onPressed: () => createTab(
                     'https://github.com/GlitterWare/Passy/issues',
                   ),
                 )),
@@ -68,7 +67,7 @@ class _SettingsScreen extends State<SettingsScreen> {
                     child: Icon(Symbols.shield_moon_rounded, weight: 700),
                   ),
                   right: const Icon(Icons.arrow_forward_ios_rounded),
-                  onPressed: () => launchUrlString(
+                  onPressed: () => createTab(
                       'https://github.com/GlitterWare/Passy/blob/main/PRIVACY-POLICY.md'),
                 )),
                 PassyPadding(ThreeWidgetButton(

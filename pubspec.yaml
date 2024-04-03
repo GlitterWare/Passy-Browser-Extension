@@ -28,7 +28,6 @@ dependencies:
   cupertino_icons: ^1.0.2
   websafe_svg: ^3.0.0+5
   flutter_date_pickers: ^0.4.2
-  url_launcher: ^6.1.10
   otp: ^3.1.4
   crypto: ^3.0.3
   cached_network_image: ^3.3.1

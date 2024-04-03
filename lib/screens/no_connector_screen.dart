@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:passy_browser_extension/common/common.dart';
+import 'package:passy_browser_extension/common/raw_interop.dart';
 import 'package:passy_browser_extension/passy_browser_extension_flutter/passy_browser_extensions_flutter.dart';
 import 'package:passy_browser_extension/passy_flutter/passy_flutter.dart';
-import 'package:url_launcher/url_launcher_string.dart';
 
 class NoConnectorScreen extends StatefulWidget {
   static const String routeName = '/noConnector';
@@ -37,7 +37,7 @@ class _NoConnectorScreen extends State<NoConnectorScreen> {
                   center: Center(child: Text(localizations.download)),
                   left: const Icon(Icons.download_rounded),
                   right: const Icon(Icons.arrow_forward_ios_rounded),
-                  onPressed: () => launchUrlString(
+                  onPressed: () => createTab(
                     'https://github.com/GlitterWare/Passy/blob/dev/DOWNLOADS.md',
                   ),
                 )),

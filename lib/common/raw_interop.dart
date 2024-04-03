@@ -43,3 +43,6 @@ external JSPromise<JSString?> getCurrentEntry();
 
 @JS()
 external JSPromise setCurrentEntry(String entry);
+
+@JS()
+external void createTab(String url);
