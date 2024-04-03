@@ -67,10 +67,12 @@ class FavIconImage extends StatelessWidget {
       });
     }
     String url = address;
-    Widget placeholder = const SvgPicture(
-      AssetBytesLoader(logoCircleSvg),
+    Widget placeholder = SvgPicture(
+      const AssetBytesLoader(logoCircleSvg),
       colorFilter:
-          ColorFilter.mode(PassyTheme.lightContentColor, BlendMode.srcIn),
+          const ColorFilter.mode(PassyTheme.lightContentColor, BlendMode.srcIn),
+      width: width,
+      height: width,
     );
     url = 'http://${url.replaceFirst(RegExp('https://|http://'), '')}';
     return FutureBuilder(
