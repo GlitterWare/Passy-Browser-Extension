@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../passy_flutter.dart';
 
@@ -28,19 +27,20 @@ class RecordDialog extends StatelessWidget {
       while (iterator.moveNext()) {
         if (iterator.current.contains(RegExp(r'[a-z]|[A-Z]'))) {
           children.add(TextSpan(
-            text: iterator.current,
-            style: GoogleFonts.firaCode(
-              textStyle: Theme.of(context).textTheme.bodyMedium,
-            ),
-          ));
+              text: iterator.current,
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyMedium
+                  ?.copyWith(fontFamily: 'FiraCode')));
         } else {
-          children.add(TextSpan(
-            text: iterator.current,
-            style: GoogleFonts.firaCode(
-              textStyle: Theme.of(context).textTheme.bodyMedium,
-              color: specialColor,
-            ),
-          ));
+          children.add(
+            TextSpan(
+                text: iterator.current,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      fontFamily: 'FiraCode',
+                      color: specialColor,
+                    )),
+          );
         }
       }
       content = SelectableText.rich(
@@ -51,9 +51,10 @@ class RecordDialog extends StatelessWidget {
       content = SelectableText(
         value,
         textAlign: textAlign,
-        style: GoogleFonts.firaCode(
-          textStyle: Theme.of(context).textTheme.bodyMedium,
-        ),
+        style: Theme.of(context)
+            .textTheme
+            .bodyMedium
+            ?.copyWith(fontFamily: 'FiraCode'),
       );
     }
     return AlertDialog(shape: shape, content: content);

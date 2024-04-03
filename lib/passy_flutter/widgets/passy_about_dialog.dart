@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:websafe_svg/websafe_svg.dart';
 
@@ -31,18 +30,18 @@ class PassyAboutDialog extends StatelessWidget {
             textAlign: TextAlign.center,
             text: TextSpan(
               text: localizations.passyBrowserExtension,
-              style: GoogleFonts.firaCode(
-                textStyle: Theme.of(context).textTheme.bodyMedium,
-                fontSize: 24,
-              ),
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyMedium
+                  ?.copyWith(fontFamily: 'FiraCode', fontSize: 24),
               children: [
                 TextSpan(
                   text: ' v$extensionVersion',
-                  style: GoogleFonts.firaCode(
-                    textStyle: Theme.of(context).textTheme.bodyMedium,
-                    color: PassyTheme.lightContentSecondaryColor,
-                    fontSize: 24,
-                  ),
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        fontFamily: 'FiraCode',
+                        fontSize: 24,
+                        color: PassyTheme.lightContentSecondaryColor,
+                      ),
                 )
               ],
             ),
@@ -51,10 +50,10 @@ class PassyAboutDialog extends StatelessWidget {
           Text(
             'Made with 💜 by Gleammer',
             textAlign: TextAlign.center,
-            style: GoogleFonts.firaCode(
-              textStyle: Theme.of(context).textTheme.bodyMedium,
-              fontSize: 12,
-            ),
+            style: Theme.of(context)
+                .textTheme
+                .bodyMedium
+                ?.copyWith(fontFamily: 'FiraCode', fontSize: 12),
           ),
           const SizedBox(height: 24),
           PassyPadding(ThreeWidgetButton(

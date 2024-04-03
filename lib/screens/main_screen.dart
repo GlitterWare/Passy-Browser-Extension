@@ -2,7 +2,6 @@ import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:passy_browser_extension/common/common.dart';
 import 'package:passy_browser_extension/passy_data/entry_event.dart';
@@ -237,8 +236,10 @@ class _MainScreen extends State<MainScreen>
                 PassyPadding(RichText(
                     textAlign: TextAlign.center,
                     text: TextSpan(
-                        style: GoogleFonts.roboto(
-                            textStyle: Theme.of(context).textTheme.bodyMedium),
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyMedium
+                            ?.copyWith(fontFamily: 'Roboto'),
                         text: '${localizations.noFavorites}.',
                         children: [
                           TextSpan(text: '\n\n${localizations.noFavorites1}'),
