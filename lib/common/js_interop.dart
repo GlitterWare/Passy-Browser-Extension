@@ -278,7 +278,7 @@ abstract class JsInterop {
     return false;
   }
 
-  renameTag(
+  Future<bool> renameTag(
     String username, {
     required EntryType type,
     required String tag,
