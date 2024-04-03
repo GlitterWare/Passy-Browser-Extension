@@ -17,7 +17,7 @@ import 'common.dart';
 abstract class JsInterop {
   static String get currentUrl => interop.location.getProperty('href'.toJS);
 
-  static bool getIsEmbed() {
+  static bool isEmbed() {
     bool result;
     try {
       result = interop.isEmbed();

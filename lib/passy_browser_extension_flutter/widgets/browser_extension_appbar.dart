@@ -31,7 +31,7 @@ class BrowserExtensionAppbar extends StatelessWidget
       leading: leading ?? PassyPadding(logo60Purple),
       automaticallyImplyLeading: false,
       actions: [
-        if (JsInterop.getIsEmbed())
+        if (JsInterop.isEmbed())
           IconButton(
             padding: PassyTheme.appBarButtonPadding,
             splashRadius: PassyTheme.appBarButtonSplashRadius,

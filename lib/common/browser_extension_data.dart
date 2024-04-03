@@ -13,7 +13,7 @@ import '../passy_data/entry_meta.dart';
 import '../passy_data/note.dart';
 
 class BrowserExtensionData {
-  final bool isEmbed = JsInterop.getIsEmbed();
+  final bool isEmbed = JsInterop.isEmbed();
   final bool isConnectorFound;
   final String pageUrl;
   Map<String, AccountCredentials> _credentials;

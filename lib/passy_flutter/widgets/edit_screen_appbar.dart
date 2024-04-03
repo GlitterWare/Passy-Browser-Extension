@@ -46,7 +46,7 @@ class EditScreenAppBar extends StatelessWidget implements PreferredSizeWidget {
               ? const Icon(Icons.add_rounded)
               : const Icon(Icons.check_rounded),
         ),
-        if (JsInterop.getIsEmbed())
+        if (JsInterop.isEmbed())
           IconButton(
             padding: PassyTheme.appBarButtonPadding,
             splashRadius: PassyTheme.appBarButtonSplashRadius,
