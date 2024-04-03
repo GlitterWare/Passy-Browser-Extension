@@ -155,9 +155,6 @@ class _LoginScreen extends State<LoginScreen> {
                                 decoration: InputDecoration(
                                   hintText: localizations.password,
                                 ),
-                                inputFormatters: [
-                                  LengthLimitingTextInputFormatter(32),
-                                ],
                               ),
                             ),
                             FloatingActionButton(
