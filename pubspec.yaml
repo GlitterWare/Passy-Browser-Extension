@@ -26,7 +26,7 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
-  websafe_svg: ^3.0.0+5
+  flutter_svg: ^2.0.10
   flutter_date_pickers: ^0.4.2
   otp: ^3.1.4
   crypto: ^3.0.3
@@ -71,8 +71,11 @@ flutter:
 
   assets:
     - assets/images/github_icon.svg
+    - assets/images/github_icon.svg.vec
     - assets/images/logo_circle.svg
+    - assets/images/logo_circle.svg.vec
     - assets/images/logo.svg
+    - assets/images/logo.svg.vec
     - assets/images/payment_card_bg.png
     - assets/fonts/
     - assets/fonts/roboto/

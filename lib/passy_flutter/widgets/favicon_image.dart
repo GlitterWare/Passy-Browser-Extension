@@ -7,7 +7,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:favicon/favicon.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
-import 'package:websafe_svg/websafe_svg.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:vector_graphics/vector_graphics.dart';
 
 import '../../common/assets.dart';
 import '../passy_flutter.dart';
@@ -66,11 +67,10 @@ class FavIconImage extends StatelessWidget {
       });
     }
     String url = address;
-    Widget placeholder = WebsafeSvg.asset(
-      logoCircleSvg,
+    Widget placeholder = const SvgPicture(
+      AssetBytesLoader(logoCircleSvg),
       colorFilter:
-          const ColorFilter.mode(PassyTheme.lightContentColor, BlendMode.srcIn),
-      width: width,
+          ColorFilter.mode(PassyTheme.lightContentColor, BlendMode.srcIn),
     );
     url = 'http://${url.replaceFirst(RegExp('https://|http://'), '')}';
     return FutureBuilder(

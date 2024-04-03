@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:passy_browser_extension/common/raw_interop.dart';
-import 'package:websafe_svg/websafe_svg.dart';
+import 'package:vector_graphics/vector_graphics.dart';
 
 import '../../common/assets.dart';
 import '../../common/common.dart';
@@ -19,10 +20,10 @@ class PassyAboutDialog extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           const SizedBox(height: 24),
-          Center(
-              child: WebsafeSvg.asset(
-            logoSvg,
-            colorFilter: const ColorFilter.mode(Colors.purple, BlendMode.srcIn),
+          const Center(
+              child: SvgPicture(
+            AssetBytesLoader(logoSvg),
+            colorFilter: ColorFilter.mode(Colors.purple, BlendMode.srcIn),
             width: 128,
           )),
           const SizedBox(height: 32),
@@ -57,12 +58,12 @@ class PassyAboutDialog extends StatelessWidget {
           ),
           const SizedBox(height: 24),
           PassyPadding(ThreeWidgetButton(
-            left: Padding(
-              padding: const EdgeInsets.only(right: 30),
-              child: WebsafeSvg.asset(
-                'assets/images/github_icon.svg',
+            left: const Padding(
+              padding: EdgeInsets.only(right: 30),
+              child: SvgPicture(
+                AssetBytesLoader('assets/images/github_icon.svg.vec'),
                 width: 26,
-                colorFilter: const ColorFilter.mode(
+                colorFilter: ColorFilter.mode(
                     PassyTheme.lightContentColor, BlendMode.srcIn),
               ),
             ),

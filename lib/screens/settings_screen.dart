@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:passy_browser_extension/common/raw_interop.dart';
 import 'package:passy_browser_extension/passy_flutter/passy_flutter.dart';
-import 'package:websafe_svg/websafe_svg.dart';
+import 'package:vector_graphics/vector_graphics.dart';
 import '../common/common.dart';
 import 'main_screen.dart';
 
@@ -41,16 +42,16 @@ class _SettingsScreen extends State<SettingsScreen> {
                     child: Icon(Icons.money_rounded),
                   ),
                   right: const Icon(Icons.arrow_forward_ios_rounded),
-                  onPressed: () => createTab(
-                      'https://github.com/sponsors/GlitterWare'),
+                  onPressed: () =>
+                      createTab('https://github.com/sponsors/GlitterWare'),
                 )),
                 PassyPadding(ThreeWidgetButton(
-                  left: Padding(
-                    padding: const EdgeInsets.only(right: 30),
-                    child: WebsafeSvg.asset(
-                      'assets/images/github_icon.svg',
+                  left: const Padding(
+                    padding: EdgeInsets.only(right: 30),
+                    child: SvgPicture(
+                      AssetBytesLoader('assets/images/github_icon.svg.vec'),
                       width: 26,
-                      colorFilter: const ColorFilter.mode(
+                      colorFilter: ColorFilter.mode(
                           PassyTheme.lightContentColor, BlendMode.srcIn),
                     ),
                   ),
