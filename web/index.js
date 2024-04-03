@@ -32,16 +32,12 @@ function autofillPassword(username, email, password) {
   return window.parent.postMessage({ service: serviceName, args: [ 'autofill', 'password', username, email, password ] }, '*');
 }
 
-async function isConnectorFound() {
-  const response = await browser.runtime.sendMessage({ args: ['is_connector_found'] });
-  if (response.response == null) return false;
-  return response.response;
+function isConnectorFound() {
+  return browser.runtime.sendMessage({ args: ['is_connector_found'] });
 }
 
-async function sendCommand(command) {
-  const response = await browser.runtime.sendMessage({ args: command });
-  if (response == null) return null;
-  return response.response;
+function runCommand(command) {
+  return browser.runtime.sendMessage({ args: command });
 }
 
 async function getLastUsername() {

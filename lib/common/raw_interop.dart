@@ -21,10 +21,10 @@ external JSPromise<JSString> getPageUrl();
 external void autofillPassword(String username, String email, String password);
 
 @JS()
-external bool isConnectorFound();
+external JSPromise isConnectorFound();
 
 @JS()
-external JSPromise sendCommand(JSArray command);
+external JSPromise runCommand(JSArray command);
 
 @JS()
 external JSPromise<JSString?> getLastUsername();

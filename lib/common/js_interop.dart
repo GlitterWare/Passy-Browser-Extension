@@ -15,7 +15,8 @@ import '../passy_data/account_credentials.dart';
 import 'common.dart';
 
 abstract class JsInterop {
-  static String get currentUrl => interop.location.getProperty('href'.toJS);
+  static String get currentUrl =>
+      (interop.location.getProperty('href'.toJS) as JSString).toDart;
 
   static bool isEmbed() {
     bool result;
@@ -46,7 +47,14 @@ abstract class JsInterop {
   static Future<bool> isConnectorFound() async {
     bool isConnectorFound;
     try {
-      isConnectorFound = interop.isConnectorFound();
+      JSAny? jsResponse = await interop.isConnectorFound().toDart;
+      if (jsResponse == null) {
+        isConnectorFound = false;
+      } else {
+        isConnectorFound =
+            ((jsResponse as JSObject).getProperty('response'.toJS) as JSBoolean)
+                .toDart;
+      }
     } catch (e) {
       isConnectorFound = false;
     }
@@ -69,8 +77,8 @@ abstract class JsInterop {
         await Future.delayed(const Duration(milliseconds: 50));
       }
     }
-    Future<dynamic> response = interop
-        .sendCommand([
+    Future<JSAny?> response = interop
+        .runCommand([
           'passy_cli'.toJS,
           'run'.toJS,
           [...(args.map((e) => e.toJS))].toJS,
@@ -78,9 +86,13 @@ abstract class JsInterop {
         ].toJS)
         .toDart;
     _commands[i] = response;
-    dynamic result = await response;
+    JSAny? result = await response;
     _commands.remove(i);
-    return result;
+    if (result == null) return null;
+    try {
+      return (result as JSObject).getProperty('response'.toJS).toString();
+    } catch (_) {}
+    return null;
   }
 
   static Future<Map<String, AccountCredentials>?>
