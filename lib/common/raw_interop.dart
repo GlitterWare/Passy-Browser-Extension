@@ -3,40 +3,43 @@
 @JS()
 library passy_browser_extension;
 
-import 'package:js/js.dart';
+import 'dart:js_interop';
 
 @JS()
-external isEmbed();
+external JSObject get location;
 
 @JS()
-external unloadEmbed();
+external bool isEmbed();
 
 @JS()
-external getPageUrl();
+external void unloadEmbed();
 
 @JS()
-external autofillPassword(username, email, password);
+external JSPromise<JSString> getPageUrl();
 
 @JS()
-external isConnectorFound();
+external void autofillPassword(String username, String email, String password);
 
 @JS()
-external sendCommand(command);
+external bool isConnectorFound();
 
 @JS()
-external getLastUsername();
+external JSPromise sendCommand(JSArray command);
 
 @JS()
-external setLastUsername(username);
+external JSPromise<JSString?> getLastUsername();
 
 @JS()
-external getCurrentUsername();
+external JSPromise setLastUsername(String username);
 
 @JS()
-external setCurrentUsername(username);
+external JSPromise<JSString?> getCurrentUsername();
 
 @JS()
-external getCurrentEntry();
+external JSPromise setCurrentUsername(String? username);
 
 @JS()
-external setCurrentEntry(username);
+external JSPromise<JSString?> getCurrentEntry();
+
+@JS()
+external JSPromise setCurrentEntry(String entry);

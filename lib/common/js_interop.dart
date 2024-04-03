@@ -1,8 +1,8 @@
 // ignore_for_file: avoid_web_libraries_in_flutter
 
 import 'dart:convert';
-import 'dart:js_util';
-import 'dart:html';
+import 'dart:js_interop';
+import 'dart:js_interop_unsafe';
 import 'package:passy_browser_extension/passy_data/common.dart';
 import 'package:passy_browser_extension/passy_data/entry_meta.dart';
 import 'package:passy_browser_extension/passy_data/passy_entry.dart';
@@ -15,7 +15,7 @@ import '../passy_data/account_credentials.dart';
 import 'common.dart';
 
 abstract class JsInterop {
-  static String get currentUrl => window.location.href;
+  static String get currentUrl => interop.location.getProperty('href'.toJS);
 
   static bool getIsEmbed() {
     bool result;
@@ -31,12 +31,12 @@ abstract class JsInterop {
     interop.unloadEmbed();
   }
 
-  static Future<String> getPageUrl() {
-    return promiseToFuture(interop.getPageUrl());
+  static Future<String> getPageUrl() async {
+    return (await interop.getPageUrl().toDart).toDart;
   }
 
   static Future<Uri?> getPageUri() async {
-    return Uri.tryParse(await promiseToFuture(interop.getPageUrl()));
+    return Uri.tryParse(await getPageUrl());
   }
 
   static void autofillPassword(String username, String email, String password) {
@@ -46,7 +46,7 @@ abstract class JsInterop {
   static Future<bool> getIsConnectorFound() async {
     bool isConnectorFound;
     try {
-      isConnectorFound = await promiseToFuture(interop.isConnectorFound());
+      isConnectorFound = interop.isConnectorFound();
     } catch (e) {
       isConnectorFound = false;
     }
@@ -69,12 +69,14 @@ abstract class JsInterop {
         await Future.delayed(const Duration(milliseconds: 50));
       }
     }
-    Future<dynamic> response = promiseToFuture(interop.sendCommand([
-      'passy_cli',
-      'run',
-      args,
-      getPassyHash(jsonEncode(args)).toString(),
-    ]));
+    Future<dynamic> response = interop
+        .sendCommand([
+          'passy_cli'.toJS,
+          'run'.toJS,
+          [...(args.map((e) => e.toJS))].toJS,
+          getPassyHash(jsonEncode(args)).toString().toJS,
+        ].toJS)
+        .toDart;
     _commands[i] = response;
     dynamic result = await response;
     _commands.remove(i);
@@ -101,24 +103,29 @@ abstract class JsInterop {
     return credentialsDecoded;
   }
 
-  static Future<String?> getLastUsername() {
-    return promiseToFuture(interop.getLastUsername());
+  static Future<String?> getLastUsername() async {
+    JSString? result = await interop.getLastUsername().toDart;
+    if (result == null) return null;
+    return result.toDart;
   }
 
   static Future<void> setLastUsername(String username) {
-    return promiseToFuture(interop.setLastUsername(username));
+    return interop.setLastUsername(username).toDart;
   }
 
-  static Future<String?> getCurrentUsername() {
-    return promiseToFuture(interop.getCurrentUsername());
+  static Future<String?> getCurrentUsername() async {
+    JSString? result = await interop.getCurrentUsername().toDart;
+    if (result == null) return null;
+    return result.toDart;
   }
 
   static Future<void> setCurrentUsername(String? username) {
-    return promiseToFuture(interop.setCurrentUsername(username));
+    return interop.setCurrentUsername(username).toDart;
   }
 
   static Future<CurrentEntry?> getCurrentEntry() async {
-    dynamic result = await promiseToFuture(interop.getCurrentEntry());
+    String? result = (await interop.getCurrentEntry().toDart)?.toDart;
+    if (result == null) return null;
     try {
       return CurrentEntry.fromJson(jsonDecode(result));
     } catch (_) {}
@@ -126,8 +133,7 @@ abstract class JsInterop {
   }
 
   static Future<void> setCurrentEntry(CurrentEntry? entry) {
-    return promiseToFuture(
-        interop.setCurrentEntry(jsonEncode(entry?.toJson())));
+    return interop.setCurrentEntry(jsonEncode(entry?.toJson())).toDart;
   }
 
   static Future<bool> verify(String username, String password) async {
