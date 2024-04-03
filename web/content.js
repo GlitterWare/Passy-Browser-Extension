@@ -81,7 +81,11 @@ function expand() {
   autofillPopup = document.getElementById('passy-autofill-popup');
   autofillPopup.style.visibility = 'visible';
   const rect = getOffset(lastElement);
-  autofillPopup.style.left = `${rect.left}px`;
+  if (lastElement.clientWidth < 355) {
+    autofillPopup.style.left = `${rect.left}px`;
+  } else {
+    autofillPopup.style.left = `${rect.left + lastElement.clientWidth - 355}px`;
+  }
   autofillPopup.style.top = `${rect.top + lastElement.clientHeight}px`;
 }
 
@@ -182,7 +186,11 @@ function onFoucsin(_) {
   if (collapsed) {
     autofillPopup.style.left = `${rect.left + el.clientWidth - 40}px`;
   } else {
-    autofillPopup.style.left = `${rect.left}px`;
+    if (el.clientWidth < 355) {
+      autofillPopup.style.left = `${rect.left}px`;
+    } else {
+      autofillPopup.style.left = `${rect.left + el.clientWidth - 355}px`;
+    }
   }
   autofillPopup.style.top = `${rect.top + el.clientHeight}px`;
 }
@@ -210,7 +218,11 @@ function onResize(_) {
   if (collapsed) {
     autofillPopup.style.left = `${rect.left + lastElement.clientWidth - 40}px`;
   } else {
-    autofillPopup.style.left = `${rect.left}px`;
+    if (lastElement.clientWidth < 355) {
+      autofillPopup.style.left = `${rect.left}px`;
+    } else {
+      autofillPopup.style.left = `${rect.left + lastElement.clientWidth - 355}px`;
+    }
   }
   autofillPopup.style.top = `${rect.top + lastElement.clientHeight}px`;
 }
