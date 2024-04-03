@@ -40,11 +40,11 @@ class _SplashScreen extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     Future<void> load() async {
-      if (!(await JsInterop.getIsConnectorFound())) {
+      if (!(await JsInterop.isConnectorFound())) {
         if (context.mounted) {
           Navigator.pushNamed(context, NoConnectorScreen.routeName);
         }
-        while (!(await JsInterop.getIsConnectorFound())) {
+        while (!(await JsInterop.isConnectorFound())) {
           await Future.delayed(const Duration(milliseconds: 100));
         }
         if (context.mounted) Navigator.pop(context);

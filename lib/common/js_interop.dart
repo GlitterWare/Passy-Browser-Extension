@@ -43,7 +43,7 @@ abstract class JsInterop {
     interop.autofillPassword(username, email, password);
   }
 
-  static Future<bool> getIsConnectorFound() async {
+  static Future<bool> isConnectorFound() async {
     bool isConnectorFound;
     try {
       isConnectorFound = interop.isConnectorFound();

@@ -38,7 +38,7 @@ class BrowserExtensionData {
         _credentials = credentials ?? {};
 
   static Future<BrowserExtensionData?> load() async {
-    bool isConnectorFound = await JsInterop.getIsConnectorFound();
+    bool isConnectorFound = await JsInterop.isConnectorFound();
     String pageUrl = await JsInterop.getPageUrl();
     String? lastUsername = await JsInterop.getLastUsername();
     lastUsername ??= '';
