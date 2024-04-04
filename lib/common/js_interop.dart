@@ -63,20 +63,16 @@ abstract class JsInterop {
   }
 
   static final Map<int, Future<dynamic>> _commands = {};
-  static int _curIndex = 0;
   static Future<dynamic> runCommand(List<String> args) async {
-    _curIndex++;
-    int i = _curIndex;
-    if (_commands.isNotEmpty) {
-      Future<dynamic> position = Future.value(null);
-      _commands[i] = position;
-      while (true) {
-        List<Future<dynamic>> toWait = _commands.values.toList();
-        toWait.removeRange(toWait.indexOf(position) + 1, toWait.length);
-        await Future.wait(toWait);
-        if (_commands.values.toList().indexOf(position) == 0) break;
-        await Future.delayed(const Duration(milliseconds: 50));
-      }
+    Future<dynamic> position = Future.value(null);
+    int i = DateTime.now().millisecondsSinceEpoch;
+    _commands[i] = position;
+    while (true) {
+      List<Future<dynamic>> toWait = _commands.values.toList();
+      toWait.removeRange(toWait.indexOf(position) + 1, toWait.length);
+      await Future.wait(toWait);
+      if (_commands.values.toList().indexOf(position) == 0) break;
+      await Future.delayed(const Duration(milliseconds: 50));
     }
     Future<JSAny?> response = interop
         .runCommand([
