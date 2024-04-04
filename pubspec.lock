@@ -125,11 +125,11 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: ba7e1116380e37bb3fac0d53277dd6937d8849d5
-      resolved-ref: ba7e1116380e37bb3fac0d53277dd6937d8849d5
+      ref: "1237cdb265473e20434b6f2d76ff336d047510d5"
+      resolved-ref: "1237cdb265473e20434b6f2d76ff336d047510d5"
       url: "https://github.com/GlitterWare/emoji_picker_flutter"
     source: git
-    version: "2.1.0"
+    version: "2.1.1"
   fake_async:
     dependency: transitive
     description:
@@ -591,26 +591,26 @@ packages:
     dependency: "direct main"
     description:
       name: vector_graphics
-      sha256: "9b238dc09b8879bca5017e382fb4b5593085e8c960d1ad348415aed3e77cc93a"
+      sha256: "32c3c684e02f9bc0afb0ae0aa653337a2fe022e8ab064bcd7ffda27a74e288e3"
       url: "https://pub.dev"
     source: hosted
-    version: "1.1.11"
+    version: "1.1.11+1"
   vector_graphics_codec:
     dependency: transitive
     description:
       name: vector_graphics_codec
-      sha256: db6a1e4c526fcf2ab2424a4a9f7fd3b206dd1533b461a87fdbd0b13cd94e4d13
+      sha256: c86987475f162fadff579e7320c7ddda04cd2fdeffbe1129227a85d9ac9e03da
       url: "https://pub.dev"
     source: hosted
-    version: "1.1.11"
+    version: "1.1.11+1"
   vector_graphics_compiler:
     dependency: transitive
     description:
       name: vector_graphics_compiler
-      sha256: afff56296ac71ce5779449ef33e5c0274bfda8c219de2095b0a4bca0330ba0fe
+      sha256: "12faff3f73b1741a36ca7e31b292ddeb629af819ca9efe9953b70bd63fc8cd81"
       url: "https://pub.dev"
     source: hosted
-    version: "1.1.11"
+    version: "1.1.11+1"
   vector_math:
     dependency: transitive
     description:

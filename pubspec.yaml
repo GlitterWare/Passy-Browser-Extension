@@ -39,7 +39,7 @@ dependencies:
   emoji_picker_flutter:
     git:
       url: https://github.com/GlitterWare/emoji_picker_flutter
-      ref: ba7e1116380e37bb3fac0d53277dd6937d8849d5
+      ref: 1237cdb265473e20434b6f2d76ff336d047510d5
   base32: ^2.1.3
   web: ^0.5.1
   vector_graphics: ^1.1.11
