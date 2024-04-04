@@ -34,6 +34,35 @@ class FavIconImage extends StatelessWidget {
     this.width = 50,
   }) : super(key: key);
 
+  Widget _decode(_FavIconData data) {
+    try {
+      return Image.memory(
+        img.encodeBmp(img.decodeImage(data.data)!),
+        errorBuilder: (ctx, obj, s) {
+          _favicons.remove(data.url);
+          _saveRequested = true;
+          return SvgPicture(
+            const AssetBytesLoader(logoCircleSvg),
+            colorFilter: const ColorFilter.mode(
+                PassyTheme.lightContentColor, BlendMode.srcIn),
+            width: width,
+            height: width,
+          );
+        },
+        width: width,
+        fit: BoxFit.fill,
+      );
+    } catch (_) {
+      return SvgPicture(
+        const AssetBytesLoader(logoCircleSvg),
+        colorFilter: const ColorFilter.mode(
+            PassyTheme.lightContentColor, BlendMode.srcIn),
+        width: width,
+        height: width,
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     dynamic file;
@@ -127,16 +156,7 @@ class FavIconImage extends StatelessWidget {
             fit: BoxFit.fill,
           );
         }
-        return Image.memory(
-          img.encodeBmp(img.decodeImage(favicon.data)!),
-          errorBuilder: (ctx, obj, s) {
-            _favicons.remove(url);
-            _saveRequested = true;
-            return placeholder;
-          },
-          width: width,
-          fit: BoxFit.fill,
-        );
+        return _decode(favicon);
       },
     );
   }
