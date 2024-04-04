@@ -27,6 +27,7 @@ import 'screens/splash_screen.dart';
 import 'screens/passwords_screen.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
 }
 
