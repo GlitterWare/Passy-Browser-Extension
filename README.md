@@ -43,7 +43,7 @@ Passy Browser Extension is open-source, feel free to make modifications to it an
 
 1. [Install Flutter](https://docs.flutter.dev/get-started/install).
 2. Clone the repository or [get the source code from the latest Passy release](https://github.com/GlitterWare/Passy/releases/latest).
-3. Run `flutter build web --web-renderer canvaskit --csp --pwa-strategy=none --dart-define=FLUTTER_WEB_CANVASKIT_URL=./canvaskit/` to build Passy Browser Extension.
+3. Run `flutter build web --web-renderer canvaskit --csp --pwa-strategy=none --dart-define=FLUTTER_WEB_CANVASKIT_URL=./canvaskit/ --wasm` to build Passy Browser Extension.
 4. You can then find your build at `build/web` relative to the project root.
 5. The default `manifest.json` is not Firefox compatible. If you wish to use your build for Firefox, remove it from the build folder and rename `manifest_firefox.json` to `manifest.json`.
 
