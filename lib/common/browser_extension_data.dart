@@ -245,7 +245,7 @@ class BrowserExtensionData {
     required String tag,
     required String newTag,
   }) =>
-      renameTag(tag: tag, newTag: newTag);
+      Future.value(false);
 
   Future<List<String>> get passwordsTags async {
     Map<String, PasswordMeta>? meta = await getPasswordsMetadata();
