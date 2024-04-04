@@ -1,23 +1,28 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:favicon/favicon.dart';
-import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:passy_browser_extension/common/js_interop.dart';
 import 'package:vector_graphics/vector_graphics.dart';
 
 import '../../common/assets.dart';
 import '../passy_flutter.dart';
+import 'package:image/image.dart' as img;
 
 bool _isFaviconManagerStarted = false;
 Completer _faviconManagerCompleter = Completer();
 Map<String, dynamic> _favicons = {};
-Map<String, Future<Favicon?>> _faviconFutures = {};
+Map<String, Future<String?>> _faviconFutures = {};
 bool _saveRequested = false;
+
+class _FavIconData {
+  final String url;
+  final Uint8List data;
+
+  _FavIconData(this.url, this.data);
+}
 
 class FavIconImage extends StatelessWidget {
   final String address;
@@ -31,34 +36,29 @@ class FavIconImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    FileInfo? fileInfo;
+    dynamic file;
     if (!_isFaviconManagerStarted) {
       _isFaviconManagerStarted = true;
       Future(() async {
-        fileInfo =
-            await DefaultCacheManager().getFileFromCache('passyfavicons');
-        File file;
-        if (fileInfo == null) {
-          file = await DefaultCacheManager().putFile(
-              'passyfavicons',
-              Uint8List.fromList(
-                  utf8.encode(jsonEncode({'favicons': _favicons}))));
-          file.writeAsStringSync(jsonEncode({'favicons': _favicons}));
+        file = await JsInterop.localGet('passyFavicons');
+        if (file == null) {
+          file = jsonEncode({'favicons': _favicons});
+          await JsInterop.localSet('passyFavicons', file);
         } else {
-          file = fileInfo!.file;
-          Map<String, dynamic> contents = jsonDecode(file.readAsStringSync());
+          Map<String, dynamic> contents = jsonDecode(file);
           dynamic favicons = contents['favicons'];
           if (favicons is! Map<String, dynamic>) {
             favicons = {};
             contents['favicons'] = favicons;
-            file.writeAsStringSync(jsonEncode(contents));
+            await JsInterop.localSet('passyFavicons', jsonEncode(contents));
           }
           _favicons = favicons;
         }
         _faviconManagerCompleter.complete();
         Future<void> faviconManager() async {
           if (_saveRequested) {
-            file.writeAsStringSync(jsonEncode({'favicons': _favicons}));
+            await JsInterop.localSet(
+                'passyFavicons', jsonEncode({'favicons': _favicons}));
           }
           Future.delayed(const Duration(seconds: 5), faviconManager);
         }
@@ -76,17 +76,28 @@ class FavIconImage extends StatelessWidget {
     );
     url = 'http://${url.replaceFirst(RegExp('https://|http://'), '')}';
     return FutureBuilder(
-      future: Future(() async {
+      future: () async {
         await _faviconManagerCompleter.future;
         dynamic imageURL = _favicons[url];
-        if (imageURL is String) return Favicon(imageURL);
-        Favicon? icon;
+        if (imageURL is String) {
+          Uint8List? data;
+          data = await JsInterop.fetchFile(imageURL);
+          if (data == null) {
+            _favicons.remove(url);
+            _saveRequested = true;
+          } else {
+            return _FavIconData(url, data);
+          }
+        }
+        String? icon;
         try {
-          Future<Favicon?>? faviconFuture = _faviconFutures[url];
-          faviconFuture ??= compute<String, Favicon?>(
-              (url) async => await FaviconFinder.getBest(url,
-                  suffixes: ['png', 'jpg', 'jpeg', 'ico']),
-              url);
+          Future<String?>? faviconFuture = _faviconFutures[url];
+          //faviconFuture ??= compute<String, Favicon?>(
+          //    (url) async => await FaviconFinder.getBest(url,
+          //        suffixes: ['png', 'jpg', 'jpeg', 'ico']),
+          //    url);
+          faviconFuture ??= Future.value(JsInterop.getBestFavicon(
+              url, ['png', 'jpg', 'jpeg', 'ico', 'bmp']));
           _faviconFutures[url] = faviconFuture;
           icon = await faviconFuture;
           _faviconFutures.remove(url);
@@ -95,17 +106,30 @@ class FavIconImage extends StatelessWidget {
           return null;
         }
         if (icon == null) return null;
-        _favicons[url] = icon.url;
+        Uint8List? data = await JsInterop.fetchFile(icon);
+        if (data == null) {
+          _favicons.remove(url);
+          _saveRequested = true;
+          return null;
+        }
+        _favicons[url] = icon;
         _saveRequested = true;
-        return icon;
-      }),
-      builder: (BuildContext context, AsyncSnapshot<Favicon?> snapshot) {
-        Favicon? favicon = snapshot.data;
+        return _FavIconData(icon, data);
+      }(),
+      builder: (BuildContext context, AsyncSnapshot<_FavIconData?> snapshot) {
+        _FavIconData? favicon = snapshot.data;
         if (favicon == null) return placeholder;
-        return CachedNetworkImage(
-          imageUrl: favicon.url,
-          placeholder: (context, _) => placeholder,
-          errorWidget: (ctx, obj, s) {
+        if (favicon.url.endsWith('.svg')) {
+          return SvgPicture.memory(
+            favicon.data,
+            placeholderBuilder: (context) => placeholder,
+            width: width,
+            fit: BoxFit.fill,
+          );
+        }
+        return Image.memory(
+          img.encodeBmp(img.decodeImage(favicon.data)!),
+          errorBuilder: (ctx, obj, s) {
             _favicons.remove(url);
             _saveRequested = true;
             return placeholder;

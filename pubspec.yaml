@@ -30,9 +30,7 @@ dependencies:
   flutter_date_pickers: ^0.4.2
   otp: ^3.1.4
   crypto: ^3.0.3
-  cached_network_image: ^3.3.1
-  favicon: ^1.1.1
-  flutter_cache_manager: ^3.3.0
+  favicon: ^1.1.2
   flutter_credit_card: ^3.0.6
   credit_card_type_detector: ^2.0.0
   material_symbols_icons: ^4.2668.0
@@ -44,6 +42,8 @@ dependencies:
       ref: ba7e1116380e37bb3fac0d53277dd6937d8849d5
   base32: ^2.1.3
   web: ^0.5.1
+  vector_graphics: ^1.1.11
+  image: ^4.0.17
 
 dev_dependencies:
   flutter_test:
