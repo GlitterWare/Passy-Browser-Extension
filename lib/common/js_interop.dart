@@ -3,6 +3,7 @@
 import 'dart:convert';
 import 'dart:js_interop';
 import 'dart:js_interop_unsafe';
+import 'dart:typed_data';
 import 'package:passy_browser_extension/passy_data/common.dart';
 import 'package:passy_browser_extension/passy_data/entry_meta.dart';
 import 'package:passy_browser_extension/passy_data/passy_entry.dart';
@@ -149,6 +150,41 @@ abstract class JsInterop {
   }
 
   static void createTab(String url) => interop.createTab(url);
+
+  static Future<String?> getBestFavicon(
+          String url, List<String> suffixes) async =>
+      (await interop
+              .getBestFavicon(url, suffixes.map((e) => e.toJS).toList().toJS)
+              .toDart)
+          ?.toDart;
+
+  static Future<Uint8List?> fetchFile(String url) async =>
+      (await interop.fetchFile(url).toDart)?.toDart;
+
+  static Future<dynamic> localGet(String key) async {
+    JSAny? val = await interop.localGet(key).toDart;
+    if (val == null) return null;
+    if (val is JSString) return val.toDart;
+    if (val is JSBoolean) return val.toDart;
+    if (val is JSNumber) return val.toDartDouble;
+    return null;
+  }
+
+  static Future<dynamic> localSet(String key, dynamic value) {
+    dynamic val;
+    if (value is String) {
+      val = value.toJS;
+    } else if (value is int) {
+      val = value.toJS;
+    } else if (value is double) {
+      val = value.toJS;
+    } else if (value is bool) {
+      val = value.toJS;
+    } else {
+      throw Exception('Value type not implemented: `${value.runtimeType}`');
+    }
+    return interop.localSet(key, val).toDart;
+  }
 
   static Future<bool> verify(String username, String password) async {
     dynamic response =

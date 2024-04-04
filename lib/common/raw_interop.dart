@@ -46,3 +46,15 @@ external JSPromise setCurrentEntry(String entry);
 
 @JS()
 external void createTab(String url);
+
+@JS()
+external JSPromise<JSString?> getBestFavicon(String url, JSArray suffixes);
+
+@JS()
+external JSPromise<JSUint8Array?> fetchFile(String url);
+
+@JS()
+external JSPromise<JSAny?> localGet(String key);
+
+@JS()
+external JSPromise localSet(String key, JSAny? value);
