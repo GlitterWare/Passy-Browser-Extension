@@ -40,6 +40,7 @@ class _SplashScreen extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     Future<void> load() async {
+      await JsInterop.localSet('passyExtensionVersion', extensionVersion);
       if (!(await JsInterop.isConnectorFound())) {
         if (context.mounted) {
           Navigator.pushNamed(context, NoConnectorScreen.routeName);
