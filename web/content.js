@@ -25,7 +25,7 @@ function loadEmbed() {
   const autofillPopup = document.getElementById('passy-autofill-popup');
   if (collapsed) return;
   if (autofillPopup != null) return;
-  document.body.insertAdjacentHTML('beforeend', `<div id="passy-autofill-popup" style="visibility: visible !important; position: absolute !important; !important; z-index: 100000 !important ; border-radius: 24px !important"><iframe src="${indexUrl}"
+  document.body.insertAdjacentHTML('beforeend', `<div id="passy-autofill-popup" style="visibility: visible !important; position: absolute !important; z-index: 100000 !important ; border-radius: 24px !important"><iframe src="${indexUrl}"
       style="border-radius: 24px !important"
       frameborder="0" 
       marginheight="0" 
@@ -45,7 +45,7 @@ function collapse() {
   var autofillPopup = document.getElementById('passy-autofill-popup');
   if (autofillPopup != null) autofillPopup.remove();
   collapsed = true;
-  document.body.insertAdjacentHTML('beforeend', `<div id="passy-autofill-popup" style="visibility: visible !important; position: absolute !important; !important; z-index: 100000 !important"><div
+  document.body.insertAdjacentHTML('beforeend', `<div id="passy-autofill-popup" style="visibility: visible !important; position: absolute !important; z-index: 100000 !important"><div
       title="Passy"
       data-toggle="tooltip"
       display="block"
